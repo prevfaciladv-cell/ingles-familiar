@@ -176,12 +176,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg
   <div class="setup-inner">
     <div class="logo">🏠</div>
     <h1>Professor de Inglês Familiar</h1>
-    <p>Cole sua chave da API Anthropic para ativar as aulas com IA.</p>
-    <input class="setup-inp" id="api-inp" type="text" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" placeholder="sk-ant-api03-...">
+    <p>Cole sua chave do Google Gemini — <b>100% gratuita</b>.</p>
+    <input class="setup-inp" id="api-inp" type="text" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" placeholder="AIza...">
     <div class="setup-msg" id="setup-msg"></div>
     <a href="javascript:void(0)" id="btn-enter" class="abtn abtn-blue">Entrar →</a>
     <a href="javascript:void(0)" id="btn-skip" class="abtn abtn-ghost">Continuar sem IA (só modo infantil)</a>
-    <p style="font-size:12px;color:var(--txt3);text-align:center;line-height:1.6">Obtenha grátis em <a href="https://console.anthropic.com" target="_blank" style="color:var(--blue)">console.anthropic.com</a><br>Salva só no seu navegador.</p>
+    <p style="font-size:12px;color:var(--txt3);text-align:center;line-height:1.6">Obtenha grátis em <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--blue)">aistudio.google.com/apikey</a><br>Salva só no seu navegador. Totalmente gratuito.</p>
   </div>
 </div>
 
@@ -605,15 +605,24 @@ function addMsg(bodyId,type,text){
 
 // ── API ────────────────────────────────────────────────────
 async function callAPI(sys,msgs){
-  var r=await fetch('https://api.anthropic.com/v1/messages',{
+  // Convert messages to Gemini format
+  var geminiMsgs = msgs.map(function(m){
+    return {role: m.role==='assistant'?'model':'user', parts:[{text:m.content}]};
+  });
+  // Prepend system as first user message if not already there
+  var allMsgs = [{role:'user',parts:[{text:sys+'
+
+Respond as instructed above.'}]},{role:'model',parts:[{text:'Understood! I will follow those instructions.'}]}].concat(geminiMsgs);
+  
+  var url='https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key='+apiKey;
+  var r=await fetch(url,{
     method:'POST',
-    headers:{'Content-Type':'application/json','x-api-key':apiKey,
-      'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,system:sys,messages:msgs})
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({contents:allMsgs,generationConfig:{maxOutputTokens:800,temperature:0.7}})
   });
   if(!r.ok){var e=await r.json().catch(function(){return{};});throw new Error(e.error&&e.error.message||'API error '+r.status);}
   var d=await r.json();
-  return d.content[0].text;
+  return d.candidates[0].content.parts[0].text;
 }
 
 // ── INIT ──────────────────────────────────────────────────
@@ -681,7 +690,7 @@ function resetKey(){
 function doLogin(){
   var v=document.getElementById('api-inp').value.trim();
   var msg=document.getElementById('setup-msg');
-  if(!v||v.length<10){msg.textContent='Cole sua chave no campo acima.';msg.style.color='#A32D2D';return;}
+  if(!v||v.length<10){msg.textContent='Cole sua chave do Google no campo acima.';msg.style.color='#A32D2D';return;}
   apiKey=v;sv('eng_key',v);
   msg.textContent='Entrando...';msg.style.color='var(--green-d)';
   setTimeout(function(){goHome();},300);
