@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Professor de Inglês Familiar</title>
+<style>
+:root{
+  --blue:#185FA5;--blue-d:#0C447C;--blue-l:#E6F1FB;
+  --green:#1D9E75;--green-d:#0F6E56;--green-l:#E1F5EE;
+  --amber:#BA7517;--amber-l:#FAEEDA;
+  --bg:#F8F7F4;--bg2:#fff;--bg3:#EFEDE8;
+  --txt:#1A1A1A;--txt2:#666;--txt3:#AAA;
+  --bdr:rgba(0,0,0,.09);--bdr2:rgba(0,0,0,.17);
+  --r:14px;--rs:10px;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#161616;--bg2:#212121;--bg3:#2A2A2A;
+  --txt:#EFEFEF;--txt2:#9A9A9A;--txt3:#555;
+  --bdr:rgba(255,255,255,.08);--bdr2:rgba(255,255,255,.15);
+  --blue-l:#0B2440;--green-l:#092E20;--amber-l:#2A1E06;
+}}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden}
+body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--txt);overscroll-behavior:none}
+.scr{display:none;height:100vh;flex-direction:column;overflow:hidden}
+.scr.on{display:flex}
+#s-setup{align-items:center;justify-content:center;overflow-y:auto;padding:2rem 1.5rem}
+.setup-inner{width:100%;max-width:400px;display:flex;flex-direction:column;gap:1rem;padding:1rem 0;align-items:center}
+.setup-inner .logo{font-size:52px}
+.setup-inner h1{font-size:21px;font-weight:700;text-align:center}
+.setup-inner p{font-size:13px;color:var(--txt2);text-align:center;line-height:1.65}
+.setup-inp{padding:14px;border:2px solid var(--blue);border-radius:var(--rs);font-size:13px;font-family:monospace;background:var(--bg2);color:var(--txt);width:100%;-webkit-appearance:none}
+.setup-msg{font-size:13px;text-align:center;min-height:20px;width:100%}
+.abtn{display:block;width:100%;padding:16px;border:none;border-radius:var(--rs);font-size:16px;font-weight:700;text-align:center;cursor:pointer;text-decoration:none;-webkit-appearance:none}
+.abtn:active{opacity:.8}
+.abtn-blue{background:var(--blue);color:#fff}
+.abtn-ghost{background:none;color:var(--txt3);font-size:13px;text-decoration:underline;padding:8px}
+#s-home{overflow-y:auto}
+.home-wrap{max-width:460px;margin:0 auto;padding:1.5rem 1.2rem 4rem;display:flex;flex-direction:column;align-items:center;gap:.9rem}
+.home-logo{font-size:44px}
+.home-title{font-size:21px;font-weight:700;text-align:center}
+.home-sub{font-size:13px;color:var(--txt2);text-align:center}
+.profile-list{display:flex;flex-direction:column;gap:9px;width:100%}
+.pcard{background:var(--bg2);border:0.5px solid var(--bdr);border-radius:var(--r);padding:14px 15px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all .15s}
+.pcard:active{transform:scale(.98)}
+.pcard.blue{border-left:4px solid var(--blue)}.pcard.blue:hover{background:var(--blue-l)}
+.pcard.purp{border-left:4px solid #6B48CC}.pcard.purp:hover{background:#EEEDFE}
+.pcard.green{border-left:4px solid var(--green)}.pcard.green:hover{background:var(--green-l)}
+.pcard.teal{border-left:4px solid #0E9AA7}.pcard.teal:hover{background:#E1F8FA}
+.pcard-icon{font-size:34px;flex-shrink:0}
+.pcard-info{flex:1}
+.pcard-name{font-size:15px;font-weight:700}
+.pcard-desc{font-size:12px;color:var(--txt2);margin-top:2px}
+.pcard-badge{font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;margin-top:4px;display:inline-block;background:var(--blue-l);color:var(--blue-d)}
+.pcard.purp .pcard-badge{background:#EEEDFE;color:#3C3489}
+.pcard.green .pcard-badge{background:var(--green-l);color:var(--green-d)}
+.pcard.teal .pcard-badge{background:#E1F8FA;color:#0A6B74}
+.cfg-link{font-size:12px;color:var(--txt3);cursor:pointer;text-decoration:underline;text-align:center}
+.app-shell{display:flex;flex-direction:column;height:100vh}
+.topbar{display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:0.5px solid var(--bdr);background:var(--bg2);flex-shrink:0}
+.back-btn{background:none;border:0.5px solid var(--bdr2);border-radius:var(--rs);padding:8px 13px;cursor:pointer;font-size:13px;color:var(--txt2);min-height:40px}
+.back-btn:active{background:var(--bg3)}
+.topbar-title{font-size:15px;font-weight:600;flex:1}
+.tbadge{font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px}
+.tbadge-blue{background:var(--blue-l);color:var(--blue-d)}
+.tbadge-green{background:var(--green-l);color:var(--green-d)}
+.tbadge-amber{background:var(--amber-l);color:var(--amber)}
+.tbadge-purp{background:#EEEDFE;color:#3C3489}
+.lesson-list{flex:1;overflow-y:auto;padding:10px}
+.sec-label{font-size:11px;font-weight:700;color:var(--txt3);text-transform:uppercase;letter-spacing:.06em;padding:10px 4px 5px}
+.li{background:var(--bg2);border:0.5px solid var(--bdr);border-radius:var(--r);padding:13px 15px;margin-bottom:8px;cursor:pointer;display:flex;align-items:center;gap:11px;transition:all .13s}
+.li:active{transform:scale(.98)}
+.li.done{border-color:var(--green);background:var(--green-l)}
+.li.cur{border-color:var(--blue);border-width:1.5px}
+.li.locked{opacity:.45;cursor:default}
+.li.tool{border-color:var(--bdr2)}
+.li-num{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.n-done{background:var(--green);color:#fff}
+.n-cur{background:var(--blue);color:#fff}
+.n-lock{background:var(--bg3);color:var(--txt3)}
+.n-tool{background:var(--bg3);color:var(--txt2)}
+.li-info{flex:1}
+.li-title{font-size:14px;font-weight:600}
+.li-desc{font-size:12px;color:var(--txt2);margin-top:2px;line-height:1.4}
+.li-status{font-size:18px}
+.chat-shell{display:flex;flex-direction:column;height:100vh}
+.chat-topbar{display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:0.5px solid var(--bdr);background:var(--bg2);flex-shrink:0}
+.chat-prog{flex:1}
+.chat-prog-title{font-size:13px;font-weight:600;margin-bottom:3px}
+.prog-bar{height:4px;background:var(--bg3);border-radius:2px;overflow:hidden}
+.prog-fill{height:100%;background:var(--blue);border-radius:2px;transition:width .4s}
+.chat-body{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:9px;scroll-behavior:smooth}
+.msg{display:flex;flex-direction:column;max-width:86%;animation:pop .18s ease}
+@keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.msg.ai{align-self:flex-start}
+.msg.user{align-self:flex-end;align-items:flex-end}
+.bubble{padding:10px 14px;border-radius:16px;font-size:14px;line-height:1.65;white-space:pre-wrap;word-break:break-word}
+.msg.ai .bubble{background:var(--bg2);border:0.5px solid var(--bdr);border-radius:4px 16px 16px 16px}
+.msg.user .bubble{background:var(--blue);color:#fff;border-radius:16px 4px 16px 16px}
+.typing{display:flex;gap:5px;padding:10px 14px;background:var(--bg2);border:0.5px solid var(--bdr);border-radius:4px 16px 16px 16px;align-self:flex-start}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--txt3);animation:bounce .9s infinite}
+.dot:nth-child(2){animation-delay:.18s}.dot:nth-child(3){animation-delay:.36s}
+@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+.chat-bottom{display:flex;gap:8px;padding:9px 11px;border-top:0.5px solid var(--bdr);background:var(--bg2);flex-shrink:0}
+.chat-inp{flex:1;padding:10px 14px;border:0.5px solid var(--bdr2);border-radius:22px;font-size:14px;background:var(--bg3);color:var(--txt);outline:none;font-family:inherit;-webkit-appearance:none}
+.chat-inp:focus{border-color:var(--blue)}
+.chat-send{padding:10px 16px;background:var(--blue);color:#fff;border:none;border-radius:22px;cursor:pointer;font-size:14px;font-weight:700;min-width:70px}
+.chat-send:disabled{background:var(--bdr);color:var(--txt3);cursor:default}
+.done-btn{display:none;margin:8px 11px;padding:13px;border:none;border-radius:var(--rs);font-size:15px;font-weight:700;cursor:pointer;text-align:center;flex-shrink:0}
+.sum-wrap{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px}
+.sum-box{background:var(--bg2);border:0.5px solid var(--bdr);border-radius:var(--r);padding:14px 15px}
+.sum-box h3{font-size:12px;font-weight:700;color:var(--txt3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+.sum-box p{font-size:14px;color:var(--txt);line-height:1.65;white-space:pre-wrap}
+.sum-next{display:block;padding:14px;border:none;border-radius:var(--rs);font-size:15px;font-weight:700;cursor:pointer;text-align:center;margin-top:2px}
+.kids-shell{display:flex;flex-direction:column;height:100vh}
+.kids-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem 1rem;gap:1.2rem;overflow:hidden}
+.k-em{font-size:96px;text-align:center;cursor:pointer;line-height:1.1;animation:pop .3s ease}
+.k-word{font-size:30px;font-weight:800;text-align:center;letter-spacing:1px}
+.k-pt{font-size:15px;color:var(--txt2);text-align:center}
+.k-speak{padding:13px 30px;background:var(--green);color:#fff;border:none;border-radius:40px;font-size:17px;font-weight:700;cursor:pointer;min-height:52px}
+.k-speak:active{background:var(--green-d)}
+.k-next{padding:13px 30px;background:var(--blue);color:#fff;border:none;border-radius:40px;font-size:17px;font-weight:700;cursor:pointer;min-height:52px}
+.k-next:active{background:var(--blue-d)}
+.k-phase{font-size:14px;color:var(--txt2);font-weight:500;text-align:center}
+.k-dots{display:flex;gap:5px;justify-content:center;flex-wrap:wrap}
+.kd{width:9px;height:9px;border-radius:50%;background:var(--bdr2);transition:all .3s}
+.kd.done{background:var(--green)}.kd.cur{background:var(--blue);transform:scale(1.4)}
+.k-opts{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;max-width:320px}
+.k-opt{padding:18px 10px;background:var(--bg2);border:2px solid var(--bdr2);border-radius:var(--r);cursor:pointer;font-size:42px;text-align:center;transition:all .13s;min-height:80px;display:flex;align-items:center;justify-content:center}
+.k-opt:active{transform:scale(.94)}
+.k-opt.ok{background:var(--green-l);border-color:var(--green)}
+.k-opt.no{background:#FCEBEB;border-color:#E24B4A}
+.k-fb{font-size:17px;font-weight:700;min-height:24px;text-align:center}
+.k-fb.ok{color:var(--green-d)}.k-fb.no{color:#A32D2D}
+.k-stars{font-size:34px;text-align:center}
+.kar-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem;gap:1.2rem;overflow:hidden}
+.kar-em{font-size:100px;cursor:pointer;animation:pop .3s ease;line-height:1.1}
+.kar-word{font-size:44px;font-weight:900;color:var(--blue);text-transform:uppercase;animation:pop .3s ease}
+.kar-tap{font-size:13px;color:var(--txt3);animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
+.kar-list{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
+.kar-item{background:var(--bg2);border:0.5px solid var(--bdr);border-radius:var(--r);padding:13px 15px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all .13s}
+.kar-item:hover{border-color:var(--green);background:var(--green-l)}
+.kar-item-icon{font-size:30px}
+.kar-item-title{font-size:14px;font-weight:600}
+.kar-item-desc{font-size:12px;color:var(--txt2);margin-top:2px}
+.eval-list{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:8px}
+.eval-item{background:var(--bg2);border:0.5px solid var(--bdr);border-radius:var(--r);padding:13px 15px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all .13s}
+.eval-item:hover{border-color:var(--amber);background:var(--amber-l)}
+.eval-item.done{border-color:var(--green);background:var(--green-l)}
+.eval-item.locked{opacity:.45;cursor:default}
+.eval-icon{font-size:30px;flex-shrink:0}
+.eval-info{flex:1}
+.eval-title{font-size:14px;font-weight:600}
+.eval-desc{font-size:12px;color:var(--txt2);margin-top:2px}
+.eval-grade{font-size:20px;font-weight:800;color:var(--green-d)}
+.grade-box{background:var(--bg2);border:2px solid var(--green);border-radius:var(--r);padding:20px;text-align:center}
+.grade-num{font-size:60px;font-weight:900;color:var(--green-d);line-height:1}
+.grade-lbl{font-size:13px;color:var(--txt2);margin-top:5px}
+.grade-stars{font-size:26px;margin:6px 0}
+.diary-list{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:8px}
+.diary-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:2rem;color:var(--txt3)}
+.err-card{background:var(--bg2);border:0.5px solid var(--bdr);border-radius:var(--r);padding:13px 15px}
+.err-lesson{font-size:13px;font-weight:600;color:var(--blue-d);margin-bottom:5px}
+.err-text{font-size:13px;color:var(--txt2);line-height:1.55}
+.err-date{font-size:11px;color:var(--txt3);margin-top:5px}
+.clr-btn{margin:8px 10px;padding:11px;background:none;border:0.5px solid #E24B4A;color:#A32D2D;border-radius:var(--rs);cursor:pointer;font-size:13px;font-weight:600;flex-shrink:0}
+</style>
+</head>
+<body>
+
+<!-- SETUP -->
+<div class="scr on" id="s-setup" style="align-items:center;justify-content:center;overflow-y:auto;padding:2rem 1.5rem">
+  <div class="setup-inner">
+    <div class="logo">🏠</div>
+    <h1>Professor de Inglês Familiar</h1>
+    <p>Cole sua chave da API Anthropic para ativar as aulas com IA.</p>
+    <input class="setup-inp" id="api-inp" type="text" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" placeholder="sk-ant-api03-...">
+    <div class="setup-msg" id="setup-msg"></div>
+    <a href="javascript:void(0)" id="btn-enter" class="abtn abtn-blue">Entrar →</a>
+    <a href="javascript:void(0)" id="btn-skip" class="abtn abtn-ghost">Continuar sem IA (só modo infantil)</a>
+    <p style="font-size:12px;color:var(--txt3);text-align:center;line-height:1.6">Obtenha grátis em <a href="https://console.anthropic.com" target="_blank" style="color:var(--blue)">console.anthropic.com</a><br>Salva só no seu navegador.</p>
+  </div>
+</div>
+
+<!-- HOME -->
+<div class="scr" id="s-home">
+  <div class="home-wrap">
+    <div class="home-logo">🏠</div>
+    <div class="home-title">Professor de Inglês Familiar</div>
+    <div class="home-sub">Quem vai estudar agora?</div>
+    <div class="profile-list">
+      <div class="pcard blue" id="pc-fab"><div class="pcard-icon">👨</div><div class="pcard-info"><div class="pcard-name">Fabiano</div><div class="pcard-desc">Conversação, leitura e pronúncia — iniciante</div><div class="pcard-badge" id="fab-badge">Aula 1 · Iniciante</div></div><div style="font-size:18px">→</div></div>
+      <div class="pcard purp" id="pc-cel"><div class="pcard-icon">👩</div><div class="pcard-info"><div class="pcard-name">Celina</div><div class="pcard-desc">Conversação, leitura e pronúncia — intermediário</div><div class="pcard-badge" id="cel-badge">Aula 1 · Intermediário</div></div><div style="font-size:18px">→</div></div>
+      <div class="pcard green" id="pc-fran"><div class="pcard-icon">👦</div><div class="pcard-info"><div class="pcard-name">Francisco</div><div class="pcard-desc">Aulas com voz, imagens e jogos</div><div class="pcard-badge" id="fran-badge">Aula 1</div></div><div style="font-size:18px">→</div></div>
+      <div class="pcard green" id="pc-mari"><div class="pcard-icon">👧</div><div class="pcard-info"><div class="pcard-name">Maria</div><div class="pcard-desc">Aulas com voz, imagens e jogos</div><div class="pcard-badge" id="mari-badge">Aula 1</div></div><div style="font-size:18px">→</div></div>
+      <div class="pcard teal" id="pc-kar"><div class="pcard-icon">🎵</div><div class="pcard-info"><div class="pcard-name">Músicas — Francisco e Maria</div><div class="pcard-desc">Karaokê visual — uma palavra por vez com voz</div><div class="pcard-badge" style="background:#E1F8FA;color:#0A6B74">5 músicas</div></div><div style="font-size:18px">→</div></div>
+    </div>
+    <div class="cfg-link" id="cfg-link">⚙️ Alterar chave da API</div>
+  </div>
+</div>
+
+<!-- ADULT LESSON LIST -->
+<div class="scr" id="s-adult-list">
+  <div class="app-shell">
+    <div class="topbar">
+      <button class="back-btn" id="al-back">← Início</button>
+      <div class="topbar-title" id="al-name">Professor</div>
+      <span class="tbadge" id="al-badge">Iniciante</span>
+    </div>
+    <div class="lesson-list" id="al-body"></div>
+  </div>
+</div>
+
+<!-- ADULT CHAT -->
+<div class="scr" id="s-chat">
+  <div class="chat-shell">
+    <div class="chat-topbar">
+      <button class="back-btn" id="chat-back">← Aulas</button>
+      <div class="chat-prog">
+        <div class="chat-prog-title" id="chat-title">Aula</div>
+        <div class="prog-bar"><div class="prog-fill" id="chat-prog" style="width:0%"></div></div>
+      </div>
+    </div>
+    <div class="chat-body" id="chat-body"></div>
+    <button class="done-btn" id="done-btn" style="background:var(--green);color:#fff">✅ Concluir Aula</button>
+    <div class="chat-bottom">
+      <input class="chat-inp" id="chat-inp" type="text" placeholder="Responda em inglês ou português...">
+      <button class="chat-send" id="chat-send">Enviar</button>
+    </div>
+  </div>
+</div>
+
+<!-- SUMMARY -->
+<div class="scr" id="s-sum">
+  <div class="app-shell">
+    <div class="topbar">
+      <button class="back-btn" id="sum-back">← Aulas</button>
+      <div class="topbar-title">Resumo da Aula</div>
+      <span class="tbadge tbadge-green">✅</span>
+    </div>
+    <div class="sum-wrap" id="sum-body"></div>
+  </div>
+</div>
+
+<!-- EVAL LIST -->
+<div class="scr" id="s-eval-list">
+  <div class="app-shell">
+    <div class="topbar">
+      <button class="back-btn" id="el-back">← Aulas</button>
+      <div class="topbar-title" id="el-name">Avaliações</div>
+      <span class="tbadge tbadge-amber">📝</span>
+    </div>
+    <div class="eval-list" id="el-body"></div>
+  </div>
+</div>
+
+<!-- EVAL CHAT -->
+<div class="scr" id="s-eval-chat">
+  <div class="chat-shell">
+    <div class="chat-topbar">
+      <button class="back-btn" id="ec-back">← Avaliações</button>
+      <div class="chat-prog">
+        <div class="chat-prog-title" id="ec-title">Avaliação</div>
+        <div class="prog-bar"><div class="prog-fill" id="ec-prog" style="width:0%"></div></div>
+      </div>
+    </div>
+    <div class="chat-body" id="ec-body"></div>
+    <button class="done-btn" id="ec-done-btn" style="background:var(--amber);color:#fff">📊 Ver minha nota</button>
+    <div class="chat-bottom">
+      <input class="chat-inp" id="ec-inp" type="text" placeholder="Responda em inglês...">
+      <button class="chat-send" id="ec-send" style="background:var(--amber)">Enviar</button>
+    </div>
+  </div>
+</div>
+
+<!-- EVAL RESULT -->
+<div class="scr" id="s-eval-result">
+  <div class="app-shell">
+    <div class="topbar">
+      <button class="back-btn" id="er-back">← Avaliações</button>
+      <div class="topbar-title">Resultado</div>
+      <span class="tbadge tbadge-amber">📊</span>
+    </div>
+    <div class="sum-wrap" id="er-body"></div>
+  </div>
+</div>
+
+<!-- PRON LIST -->
+<div class="scr" id="s-pron-list">
+  <div class="app-shell">
+    <div class="topbar">
+      <button class="back-btn" id="pl-back">← Aulas</button>
+      <div class="topbar-title" id="pl-name">Pronúncia</div>
+      <span class="tbadge tbadge-blue">🎤</span>
+    </div>
+    <div class="lesson-list" id="pl-body"></div>
+  </div>
+</div>
+
+<!-- PRON CHAT -->
+<div class="scr" id="s-pron-chat">
+  <div class="chat-shell">
+    <div class="chat-topbar">
+      <button class="back-btn" id="pc-back">← Pronúncia</button>
+      <div class="chat-prog">
+        <div class="chat-prog-title" id="pc-title">Pronúncia</div>
+        <div class="prog-bar"><div class="prog-fill" id="pc-prog" style="width:0%"></div></div>
+      </div>
+    </div>
+    <div class="chat-body" id="pc-body"></div>
+    <div class="chat-bottom">
+      <input class="chat-inp" id="pc-inp" type="text" placeholder="Responda aqui...">
+      <button class="chat-send" id="pc-send">Enviar</button>
+    </div>
+  </div>
+</div>
+
+<!-- DIARY -->
+<div class="scr" id="s-diary">
+  <div class="app-shell">
+    <div class="topbar">
+      <button class="back-btn" id="dr-back">← Aulas</button>
+      <div class="topbar-title" id="dr-name">Diário de Erros</div>
+      <span class="tbadge tbadge-blue">📒</span>
+    </div>
+    <div class="diary-list" id="dr-body"></div>
+    <button class="clr-btn" id="dr-clr">🗑️ Limpar diário</button>
+  </div>
+</div>
+
+<!-- KIDS -->
+<div class="scr" id="s-kids">
+  <div class="kids-shell">
+    <div class="topbar">
+      <button class="back-btn" id="ki-back">← Início</button>
+      <div class="topbar-title" id="ki-name">🧒 Francisco</div>
+      <span class="tbadge tbadge-green" id="ki-badge">Aula 1</span>
+    </div>
+    <div class="kids-body" id="ki-body"></div>
+  </div>
+</div>
+
+<!-- KARAOKE LIST -->
+<div class="scr" id="s-kar-list">
+  <div class="kids-shell">
+    <div class="topbar">
+      <button class="back-btn" id="kl-back">← Início</button>
+      <div class="topbar-title">🎵 Músicas</div>
+      <span class="tbadge tbadge-green">Infantil</span>
+    </div>
+    <div class="kar-list" id="kl-body"></div>
+  </div>
+</div>
+
+<!-- KARAOKE PLAY -->
+<div class="scr" id="s-kar-play">
+  <div class="kids-shell">
+    <div class="topbar">
+      <button class="back-btn" id="kp-back">← Músicas</button>
+      <div class="topbar-title" id="kp-name">Música</div>
+      <span class="tbadge tbadge-green">🎵</span>
+    </div>
+    <div class="kar-body" id="kp-body"></div>
+  </div>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────
+var COLORS=[
+  {e:'🔴',n:'Red',p:'Vermelho',x:'The apple is red.'},
+  {e:'🔵',n:'Blue',p:'Azul',x:'The sky is blue.'},
+  {e:'🟡',n:'Yellow',p:'Amarelo',x:'The sun is yellow.'},
+  {e:'🟢',n:'Green',p:'Verde',x:'The grass is green.'},
+  {e:'🟠',n:'Orange',p:'Laranja',x:'The orange is orange!'},
+  {e:'🟣',n:'Purple',p:'Roxo',x:'Grapes are purple.'},
+  {e:'🩷',n:'Pink',p:'Rosa',x:'Flamingos are pink.'},
+  {e:'⬜',n:'White',p:'Branco',x:'Snow is white.'},
+  {e:'⬛',n:'Black',p:'Preto',x:'The night is black.'},
+  {e:'🟤',n:'Brown',p:'Marrom',x:'Chocolate is brown.'}
+];
+var ANIMALS=[
+  {e:'🐶',n:'Dog',p:'Cachorro',x:'Woof!'},{e:'🐱',n:'Cat',p:'Gato',x:'Meow!'},
+  {e:'🐟',n:'Fish',p:'Peixe',x:'Splash!'},{e:'🐦',n:'Bird',p:'Passaro',x:'Tweet!'},
+  {e:'🐘',n:'Elephant',p:'Elefante',x:'Trumpet!'},{e:'🦁',n:'Lion',p:'Leao',x:'Roar!'},
+  {e:'🐵',n:'Monkey',p:'Macaco',x:'Ooh!'},{e:'🐰',n:'Rabbit',p:'Coelho',x:'Hop!'},
+  {e:'🦆',n:'Duck',p:'Pato',x:'Quack!'},{e:'🐮',n:'Cow',p:'Vaca',x:'Moo!'},
+  {e:'🐸',n:'Frog',p:'Sapo',x:'Ribbit!'},{e:'🐧',n:'Penguin',p:'Pinguim',x:'Waddle!'},
+  {e:'🦊',n:'Fox',p:'Raposa',x:'Yip!'},{e:'🐻',n:'Bear',p:'Urso',x:'Growl!'}
+];
+var NUMBERS=[
+  {e:'1️⃣',n:'One',p:'Um',num:1},{e:'2️⃣',n:'Two',p:'Dois',num:2},
+  {e:'3️⃣',n:'Three',p:'Tres',num:3},{e:'4️⃣',n:'Four',p:'Quatro',num:4},
+  {e:'5️⃣',n:'Five',p:'Cinco',num:5},{e:'6️⃣',n:'Six',p:'Seis',num:6},
+  {e:'7️⃣',n:'Seven',p:'Sete',num:7},{e:'8️⃣',n:'Eight',p:'Oito',num:8},
+  {e:'9️⃣',n:'Nine',p:'Nove',num:9},{e:'🔟',n:'Ten',p:'Dez',num:10},
+  {e:'1️⃣1️⃣',n:'Eleven',p:'Onze',num:11},{e:'1️⃣2️⃣',n:'Twelve',p:'Doze',num:12}
+];
+var FAMILY=[
+  {e:'👨',n:'Dad',p:'Pai'},{e:'👩',n:'Mom',p:'Mae'},
+  {e:'👧',n:'Girl',p:'Menina'},{e:'👦',n:'Boy',p:'Menino'},
+  {e:'👴',n:'Grandpa',p:'Avo'},{e:'👵',n:'Grandma',p:'Avo'}
+];
+var FOOD=[
+  {e:'🍎',n:'Apple',p:'Maca'},{e:'🍌',n:'Banana',p:'Banana'},
+  {e:'🍕',n:'Pizza',p:'Pizza'},{e:'🍦',n:'Ice Cream',p:'Sorvete'},
+  {e:'🍪',n:'Cookie',p:'Biscoito'},{e:'🥛',n:'Milk',p:'Leite'}
+];
+var TOYS=[
+  {e:'⚽',n:'Ball',p:'Bola'},{e:'🎨',n:'Paint',p:'Tinta'},
+  {e:'📚',n:'Book',p:'Livro'},{e:'🧸',n:'Teddy Bear',p:'Ursinho'},
+  {e:'🚗',n:'Car',p:'Carro'},{e:'🎮',n:'Game',p:'Jogo'}
+];
+var BODY=[
+  {e:'👀',n:'Eyes',p:'Olhos'},{e:'👂',n:'Ear',p:'Ouvido'},
+  {e:'👃',n:'Nose',p:'Nariz'},{e:'👄',n:'Mouth',p:'Boca'},
+  {e:'🤚',n:'Hand',p:'Mao'},{e:'🦶',n:'Foot',p:'Pe'}
+];
+
+var KIDS_LESSONS=[
+  {id:1,title:'Colors',words:COLORS},
+  {id:2,title:'Animals',words:ANIMALS},
+  {id:3,title:'Numbers 1-6',words:NUMBERS.slice(0,6)},
+  {id:4,title:'Numbers 7-12',words:NUMBERS.slice(6,12)},
+  {id:5,title:'Family',words:FAMILY},
+  {id:6,title:'Food',words:FOOD},
+  {id:7,title:'Toys',words:TOYS},
+  {id:8,title:'Body Parts',words:BODY}
+];
+
+var KARAOKE_SONGS=[
+  {id:'k1',title:'ABC Song',icon:'🔤',words:[
+    {e:'🔤',w:'A'},{e:'🔤',w:'B'},{e:'🔤',w:'C'},{e:'🔤',w:'D'},
+    {e:'🔤',w:'E'},{e:'🔤',w:'F'},{e:'🔤',w:'G'},{e:'🔤',w:'H'},
+    {e:'🔤',w:'I'},{e:'🔤',w:'J'},{e:'🔤',w:'K'},{e:'🔤',w:'L'},
+    {e:'🔤',w:'M'},{e:'🔤',w:'N'},{e:'🔤',w:'O'},{e:'🔤',w:'P'},
+    {e:'🔤',w:'Q'},{e:'🔤',w:'R'},{e:'🔤',w:'S'},{e:'🔤',w:'T'},
+    {e:'🔤',w:'U'},{e:'🔤',w:'V'},{e:'🔤',w:'W'},{e:'🔤',w:'X'},
+    {e:'🔤',w:'Y'},{e:'🔤',w:'Z'}
+  ]},
+  {id:'k2',title:'Colors Song',icon:'🌈',words:[
+    {e:'🔴',w:'Red'},{e:'🟡',w:'Yellow'},{e:'🩷',w:'Pink'},{e:'🟢',w:'Green'},
+    {e:'🟠',w:'Orange'},{e:'🟣',w:'Purple'},{e:'🔵',w:'Blue'},{e:'🌈',w:'Rainbow'}
+  ]},
+  {id:'k3',title:'Animals Song',icon:'🐾',words:[
+    {e:'🐶',w:'Dog'},{e:'🐱',w:'Cat'},{e:'🐮',w:'Cow'},
+    {e:'🐸',w:'Frog'},{e:'🦆',w:'Duck'},{e:'🐘',w:'Elephant'},
+    {e:'🦁',w:'Lion'},{e:'🐵',w:'Monkey'},{e:'🐧',w:'Penguin'}
+  ]},
+  {id:'k4',title:'Numbers Song',icon:'🔢',words:[
+    {e:'1️⃣',w:'One'},{e:'2️⃣',w:'Two'},{e:'3️⃣',w:'Three'},
+    {e:'4️⃣',w:'Four'},{e:'5️⃣',w:'Five'},{e:'6️⃣',w:'Six'},
+    {e:'7️⃣',w:'Seven'},{e:'8️⃣',w:'Eight'},{e:'9️⃣',w:'Nine'},{e:'🔟',w:'Ten'}
+  ]},
+  {id:'k5',title:'Body Song',icon:'💪',words:[
+    {e:'👀',w:'Eyes'},{e:'👂',w:'Ears'},{e:'👃',w:'Nose'},
+    {e:'👄',w:'Mouth'},{e:'🤚',w:'Hands'},{e:'🦶',w:'Feet'},{e:'💪',w:'Body'}
+  ]}
+];
+
+// Adult lessons - using plain strings, no slashes in content
+var FAB_LESSONS=[
+  {id:1,title:'Hello! Nice to meet you!',desc:'Cumprimentos, apresentacoes e frases basicas',
+   sys:'You are a friendly English teacher for Fabiano, a Brazilian adult absolute beginner. Lesson 1 goal: greetings, introductions, please, thank you, sorry, yes, no. Teach one phrase at a time. Show English + phonetics in Portuguese + translation. Example: Hello = Helow = Ola. Ask him to practice each phrase. Be warm and encouraging. After 8 to 10 exchanges ask if he wants to finish.'},
+  {id:2,title:'Numbers and How much?',desc:'Numeros 1-20 e perguntar precos',
+   sys:'Lesson 2 for Fabiano, beginner. Goal: numbers 1-20, asking prices. Teach step by step, show phonetics in Portuguese. Make him practice.'},
+  {id:3,title:'At the Coffee Shop',desc:'Pedir cafe, agua, comida',
+   sys:'Lesson 3 for Fabiano, beginner. Goal: ordering at a coffee shop. Phrases: I would like, Can I have, Thank you, How much. Do roleplay as barista and customer. Teach phrases first then practice.'},
+  {id:4,title:'At the Restaurant',desc:'Cardapio, pedidos, conta',
+   sys:'Lesson 4 for Fabiano, beginner. Goal: restaurant vocabulary. Menu, ordering, asking for the bill. Teach key phrases then do roleplay as waiter and customer.'},
+  {id:5,title:'At the Hotel',desc:'Check-in, quarto, pedidos',
+   sys:'Lesson 5 for Fabiano, beginner. Goal: hotel interactions. Check-in, room requests, asking for help. Teach phrases then roleplay as receptionist and guest.'},
+  {id:6,title:'Shopping',desc:'Comprar roupas, tamanhos, precos',
+   sys:'Lesson 6 for Fabiano, beginner. Goal: shopping. Sizes, colors, prices, Can I try this on, Do you have. Teach phrases then roleplay as shop assistant and customer.'},
+  {id:7,title:'At the Airport',desc:'Check-in, portoes, imigracao',
+   sys:'Lesson 7 for Fabiano, beginner. Goal: airport. Check-in, boarding, customs, Where is gate, I have nothing to declare. Teach step by step with roleplay.'},
+  {id:8,title:'Getting Around',desc:'Direcoes, taxi, transporte',
+   sys:'Lesson 8 for Fabiano, beginner. Goal: transportation. Asking directions, taking taxi or Uber, How do I get to. Teach phrases then practice.'},
+  {id:9,title:'Small Talk',desc:'Papo casual com americanos',
+   sys:'Lesson 9 for Fabiano, beginner. Goal: small talk. Weather, weekend plans, Where are you from, What do you do. Practice natural conversation and correct fluency.'},
+  {id:10,title:'At the Doctor',desc:'Explicar sintomas, emergencias',
+   sys:'Lesson 10 for Fabiano, beginner. Goal: doctor or pharmacy. Symptoms, I have a headache, I need a prescription. Teach key phrases with roleplay.'},
+  {id:11,title:'Christmas in the US',desc:'Natal, compras de fim de ano',
+   sys:'Lesson 11 for Fabiano, beginner. Goal: Christmas vocabulary. Merry Christmas, holiday shopping, celebrations, Happy New Year. Fun festive lesson with roleplay at a Christmas market.'},
+  {id:12,title:'Free Conversation',desc:'Conversa livre - teste do que aprendeu',
+   sys:'Lesson 12 for Fabiano. Free conversation practice. Talk about anything - his trip to the US, his family, his life. Correct naturally during conversation. Celebrate his progress.'}
+];
+
+var CEL_LESSONS=[
+  {id:1,title:'Where are you from?',desc:'Apresentacoes fluentes e small talk',
+   sys:'You are an English teacher for Celina, a Brazilian adult with some English background, intermediate beginner. Lesson 1 goal: fluid introductions, small talk, talking about herself and family. She knows basics - push her to speak in full sentences and correct her fluency and pronunciation.'},
+  {id:2,title:'At the Restaurant',desc:'Pedidos fluentes, preferencias, alergias',
+   sys:'Lesson 2 for Celina, intermediate beginner. Goal: restaurant conversation at intermediate level. Ordering fluently, dietary restrictions, recommendations. Push her to use complete sentences and correct grammar and pronunciation.'},
+  {id:3,title:'At the Hotel',desc:'Check-in, problemas, pedidos especiais',
+   sys:'Lesson 3 for Celina. Goal: hotel interactions at intermediate level. Complaints, special requests, problem solving. Do roleplay and push her to handle unexpected situations in English.'},
+  {id:4,title:'Shopping and Returns',desc:'Compras, devolucoes, comparacoes',
+   sys:'Lesson 4 for Celina. Goal: advanced shopping. Comparing products, returns, bargaining, describing what she wants. Push fluency and natural expressions.'},
+  {id:5,title:'Directions and Transport',desc:'Direcoes complexas, transporte publico',
+   sys:'Lesson 5 for Celina. Goal: giving and understanding complex directions, using public transport, Uber, maps.'},
+  {id:6,title:'American Culture',desc:'Costumes, expressoes, girias americanas',
+   sys:'Lesson 6 for Celina. Goal: American culture, customs, common idioms and expressions. Hang in there, what is up, no worries. Teach 5 idioms with context and practice.'},
+  {id:7,title:'Networking',desc:'Ingles profissional e apresentacoes',
+   sys:'Lesson 7 for Celina. Goal: professional English. Networking, introductions, talking about her work.'},
+  {id:8,title:'Opinions and Debates',desc:'Expressar opinoes, concordar, discordar',
+   sys:'Lesson 8 for Celina. Goal: expressing opinions. I think that, I agree or disagree because, debating politely.'},
+  {id:9,title:'Storytelling',desc:'Contar historias e experiencias passadas',
+   sys:'Lesson 9 for Celina. Goal: past tense storytelling. Telling about trips, experiences, using narrative tenses fluently.'},
+  {id:10,title:'Christmas in the US',desc:'Natal americano, tradicoes, compras',
+   sys:'Lesson 10 for Celina. Goal: Christmas vocabulary and culture. Holiday traditions, shopping, celebrations. Fun festive conversation practice.'}
+];
+
+var PRON_LESSONS=[
+  {id:'p1',title:'TH - O som mais dificil',badge:'Nivel 1',
+   sys:'You are a pronunciation coach for Brazilian Portuguese speakers learning American English. Lesson: The TH sound. Brazilians often say de or te instead of th. Step 1: Explain how to position tongue between teeth. Step 2: Practice words: the, this, that, think, thank, three. Step 3: Practice sentences: This is the thing. Thank you very much. Show phonetics: the = dhi, think = think with tongue between teeth. Be encouraging. Correct gently.'},
+  {id:'p2',title:'R Americano',badge:'Nivel 1',
+   sys:'Pronunciation lesson: The American R sound. Very different from Brazilian R. The American R: curl tongue back, do not touch the roof of the mouth. Practice words: red, right, road, very, story, better, water, butter. Practice sentences. Show phonetics. Correct and encourage.'},
+  {id:'p3',title:'Vogais Longas',badge:'Nivel 1',
+   sys:'Pronunciation lesson: Long vowels in American English. Brazilians often shorten them. Focus: a in cake, e in he or she, i in like, o in home, u in cute. Contrast: bit vs beat, full vs fool. Practice sentences with long vowels. Show phonetics. Correct gently.'},
+  {id:'p4',title:'Consoantes Finais',badge:'Nivel 2',
+   sys:'Pronunciation lesson: Final consonants. Brazilians often drop them. Americans always pronounce them. Focus: words ending in t, d, k, p, s: cat, bad, book, cup, bus. Practice: I want that, good book, bus stop. Drill the final sounds.'},
+  {id:'p5',title:'V vs B',badge:'Nivel 2',
+   sys:'Pronunciation lesson: V vs B sounds. Brazilians often confuse them. V: upper teeth touch lower lip. very, vote, visit, love. B: lips together. best, boy, buy, believe. Minimal pairs: very vs berry, vest vs best. Drill until the difference is clear.'},
+  {id:'p6',title:'Entonacao Americana',badge:'Nivel 3',
+   sys:'Pronunciation lesson: American intonation and rhythm. English is stress-timed. Key words get stress, others are reduced. I WANT to GO to the STORE. Common reductions: want to becomes wanna, going to becomes gonna. Practice natural flowing sentences.'}
+];
+
+var EVALUATIONS={
+  fabiano:[
+    {id:'e1',title:'Avaliacao - Mes 1 e 2',after:6,icon:'📝',
+     desc:'Testa: cumprimentos, numeros, cafe, restaurante, hotel e compras',
+     sys:'You are evaluating Fabiano, a Brazilian adult English beginner, after completing Months 1 and 2. Topics covered: greetings, numbers, coffee shop, restaurant, hotel, shopping. Conduct the evaluation in 3 phases. Phase 1 Vocabulary: ask him to translate or use 3 words from the topics. Phase 2 Conversation: do 2 short roleplay situations. Phase 3 Pronunciation check: ask him to write how he would pronounce 2 specific words. After all phases give a grade from 1 to 10, stars (1 star for 1-4, 2 stars for 5-7, 3 stars for 8-10), what he did well, what needs improvement. Format grade as Grade: X out of 10. Be warm and encouraging.'},
+    {id:'e2',title:'Avaliacao Final',after:12,icon:'🏆',
+     desc:'Simulacao completa: chegando aos EUA no Natal',
+     sys:'Final evaluation for Fabiano after 7 months of study. Simulate: Fabiano just arrived at a US airport for Christmas. Scene 1 Immigration officer: ask standard questions. Scene 2 Hotel check-in: handle the check-in as receptionist. Scene 3 Restaurant on Christmas Eve: full dinner interaction as waiter. Scene 4 Small talk: casual conversation with a friendly American. After all 4 scenes give overall grade from 1 to 10. Format grade as Grade: X out of 10. Performance in each scene. Top 3 strengths. Top 3 areas to improve. Final encouragement for the US trip.'}
+  ],
+  celina:[
+    {id:'e1',title:'Avaliacao - Mes 3 e 4',after:5,icon:'📝',
+     desc:'Testa: small talk, restaurante, hotel, shopping e cultura americana',
+     sys:'You are evaluating Celina, a Brazilian adult intermediate English learner, after completing Months 3 and 4. Topics: small talk, restaurant, hotel, shopping, American culture and idioms. Phase 1 Fluency: 2 open questions asking her to talk freely. Phase 2 Idioms: test 3 expressions from her lessons. Phase 3 Roleplay: 2 advanced situations. After all phases give grade from 1 to 10. Format as Grade: X out of 10. Strengths, weaknesses and recommendation. Push her - she has a base.'},
+    {id:'e2',title:'Avaliacao Final',after:10,icon:'🏆',
+     desc:'Simulacao completa: vivendo nos EUA no Natal',
+     sys:'Final evaluation for Celina, intermediate learner after 7 months. Simulate a full day in the US at Christmas. Scene 1: Networking event with an American professional. Scene 2: Christmas shopping in a busy store. Scene 3: Extended dinner conversation with American friends. Scene 4: Hotel problem solving. After all scenes give grade from 1 to 10. Format as Grade: X out of 10. Detailed justification, strengths, achievements and final encouragement.'}
+  ]
+};
+
+// ── STATE ─────────────────────────────────────────────────
+var apiKey='';
+var curUser='fabiano';
+var curLesson=null;
+var curEval=null;
+var curPron=null;
+var curKid='francisco';
+var curKar=null;
+var chatHist=[];
+var evalHist=[];
+var pronHist=[];
+var chatCount=0,evalCount=0,pronCount=0;
+var chatLoading=false,evalLoading=false,pronLoading=false;
+var kidsLesson=null,kidsWords=[],kidsIdx=0,kidsScore=0,kidsCorrect='';
+var karIdx=0,karAuto=null;
+var state={fabiano:{lesson:1},celina:{lesson:1},francisco:{lesson:1},maria:{lesson:1}};
+var diary={fabiano:[],celina:[]};
+var grades={fabiano:{},celina:{}};
+
+// ── HELPERS ───────────────────────────────────────────────
+function show(id){
+  var all=document.querySelectorAll('.scr');
+  for(var i=0;i<all.length;i++) all[i].style.display='none';
+  var el=document.getElementById(id);
+  if(el) el.style.display='flex';
+}
+function sv(k,v){try{localStorage.setItem(k,String(v));}catch(e){}}
+function ld(k,d){try{return localStorage.getItem(k)||d;}catch(e){return d;}}
+function esc(s){
+  s=String(s);
+  s=s.split('&').join('&amp;');
+  s=s.split('<').join('&lt;');
+  s=s.split('>').join('&gt;');
+  s=s.split('\n').join('<br>');
+  return s;
+}
+function speak(w,r){
+  if(!window.speechSynthesis)return;
+  window.speechSynthesis.cancel();
+  var u=new SpeechSynthesisUtterance(w);
+  u.lang='en-US';u.rate=r||0.85;u.pitch=1;
+  window.speechSynthesis.speak(u);
+}
+function mkTyping(){
+  var d=document.createElement('div');
+  d.className='typing';
+  d.innerHTML='<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
+  return d;
+}
+function addMsg(bodyId,type,text){
+  var body=document.getElementById(bodyId);
+  var d=document.createElement('div');
+  d.className='msg '+type;
+  d.innerHTML='<div class="bubble">'+esc(text)+'</div>';
+  body.appendChild(d);
+  body.scrollTop=body.scrollHeight;
+}
+
+// ── API ────────────────────────────────────────────────────
+async function callAPI(sys,msgs){
+  var r=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-api-key':apiKey,
+      'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,system:sys,messages:msgs})
+  });
+  if(!r.ok){var e=await r.json().catch(function(){return{};});throw new Error(e.error&&e.error.message||'API error '+r.status);}
+  var d=await r.json();
+  return d.content[0].text;
+}
+
+// ── INIT ──────────────────────────────────────────────────
+window.onload=function(){
+  try{apiKey=ld('eng_key','');}catch(e){}
+  state.fabiano.lesson=parseInt(ld('fab_l','1'));
+  state.celina.lesson=parseInt(ld('cel_l','1'));
+  state.francisco.lesson=parseInt(ld('fran_l','1'));
+  state.maria.lesson=parseInt(ld('mari_l','1'));
+  try{diary.fabiano=JSON.parse(ld('fab_d','[]'))||[];}catch(e){}
+  try{diary.celina=JSON.parse(ld('cel_d','[]'))||[];}catch(e){}
+  try{grades.fabiano=JSON.parse(ld('fab_g','{}'))||{};}catch(e){}
+  try{grades.celina=JSON.parse(ld('cel_g','{}'))||{};}catch(e){}
+
+  document.getElementById('btn-enter').addEventListener('click',function(e){e.preventDefault();doLogin();});
+  document.getElementById('btn-skip').addEventListener('click',function(e){e.preventDefault();goHome();});
+  document.getElementById('api-inp').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
+  document.getElementById('pc-fab').addEventListener('click',function(){enterAdult('fabiano');});
+  document.getElementById('pc-cel').addEventListener('click',function(){enterAdult('celina');});
+  document.getElementById('pc-fran').addEventListener('click',function(){enterKids('francisco');});
+  document.getElementById('pc-mari').addEventListener('click',function(){enterKids('maria');});
+  document.getElementById('pc-kar').addEventListener('click',function(){showKarList();});
+  document.getElementById('cfg-link').addEventListener('click',function(){showSetup();});
+  document.getElementById('al-back').addEventListener('click',function(){goHome();});
+  document.getElementById('chat-back').addEventListener('click',function(){showAdultList();});
+  document.getElementById('sum-back').addEventListener('click',function(){showAdultList();});
+  document.getElementById('el-back').addEventListener('click',function(){showAdultList();});
+  document.getElementById('ec-back').addEventListener('click',function(){showEvalList();});
+  document.getElementById('er-back').addEventListener('click',function(){showEvalList();});
+  document.getElementById('pl-back').addEventListener('click',function(){showAdultList();});
+  document.getElementById('pc-back').addEventListener('click',function(){showPronList();});
+  document.getElementById('dr-back').addEventListener('click',function(){showAdultList();});
+  document.getElementById('dr-clr').addEventListener('click',function(){clearDiary();});
+  document.getElementById('ki-back').addEventListener('click',function(){goHome();});
+  document.getElementById('kl-back').addEventListener('click',function(){goHome();});
+  document.getElementById('kp-back').addEventListener('click',function(){clearTimeout(karAuto);showKarList();});
+  document.getElementById('chat-send').addEventListener('click',function(){sendChat();});
+  document.getElementById('chat-inp').addEventListener('keydown',function(e){if(e.key==='Enter')sendChat();});
+  document.getElementById('done-btn').addEventListener('click',function(){completeLesson();});
+  document.getElementById('ec-send').addEventListener('click',function(){sendEval();});
+  document.getElementById('ec-inp').addEventListener('keydown',function(e){if(e.key==='Enter')sendEval();});
+  document.getElementById('ec-done-btn').addEventListener('click',function(){finishEval();});
+  document.getElementById('pc-send').addEventListener('click',function(){sendPron();});
+  document.getElementById('pc-inp').addEventListener('keydown',function(e){if(e.key==='Enter')sendPron();});
+
+  updateHome();
+  if(apiKey) goHome(); else showSetup();
+};
+
+function updateHome(){
+  var fl=state.fabiano.lesson,cl=state.celina.lesson;
+  var frl=state.francisco.lesson,ml=state.maria.lesson;
+  document.getElementById('fab-badge').textContent='Aula '+Math.min(fl,FAB_LESSONS.length)+' de '+FAB_LESSONS.length+' - Iniciante';
+  document.getElementById('cel-badge').textContent='Aula '+Math.min(cl,CEL_LESSONS.length)+' de '+CEL_LESSONS.length+' - Intermediario';
+  document.getElementById('fran-badge').textContent='Aula '+Math.min(frl,KIDS_LESSONS.length)+' de '+KIDS_LESSONS.length;
+  document.getElementById('mari-badge').textContent='Aula '+Math.min(ml,KIDS_LESSONS.length)+' de '+KIDS_LESSONS.length;
+}
+
+function doLogin(){
+  var v=document.getElementById('api-inp').value.trim();
+  var msg=document.getElementById('setup-msg');
+  if(!v||v.length<10){msg.textContent='Cole sua chave no campo acima.';msg.style.color='#A32D2D';return;}
+  apiKey=v;sv('eng_key',v);
+  msg.textContent='Entrando...';msg.style.color='var(--green-d)';
+  setTimeout(function(){goHome();},300);
+}
+function showSetup(){document.getElementById('api-inp').value=apiKey||'';show('s-setup');}
+function goHome(){updateHome();show('s-home');}
+
+// ── ADULT ─────────────────────────────────────────────────
+function enterAdult(user){
+  curUser=user;
+  var lessons=user==='fabiano'?FAB_LESSONS:CEL_LESSONS;
+  var cur=state[user].lesson;
+  var nm=user==='fabiano'?'Fabiano':'Celina';
+  var lvl=user==='fabiano'?'Iniciante':'Intermediario';
+  var badge=user==='fabiano'?'tbadge-blue':'tbadge-purp';
+  document.getElementById('al-name').textContent=nm+' - Ingles';
+  document.getElementById('al-badge').className='tbadge '+badge;
+  document.getElementById('al-badge').textContent=lvl;
+  buildAdultList(lessons,cur);
+  show('s-adult-list');
+}
+
+function buildAdultList(lessons,cur){
+  var body=document.getElementById('al-body');
+  body.innerHTML='';
+
+  // Tools section
+  var sec=document.createElement('div');sec.className='sec-label';sec.textContent='Ferramentas';body.appendChild(sec);
+  var tools=[
+    {icon:'📝',title:'Avaliacoes',desc:'Teste seu nivel e veja sua nota'},
+    {icon:'🎤',title:'Pronuncia Guiada',desc:'TH, R americano, vogais, ritmo'},
+    {icon:'📒',title:'Diario de Erros',desc:'Seus erros registrados - revise e melhore'}
+  ];
+  tools.forEach(function(t,i){
+    var d=document.createElement('div');
+    d.className='li tool';
+    d.innerHTML='<div class="li-num n-tool">'+t.icon+'</div><div class="li-info"><div class="li-title">'+t.title+'</div><div class="li-desc">'+t.desc+'</div></div><div class="li-status">→</div>';
+    d.addEventListener('click',(function(idx){return function(){if(idx===0)showEvalList();else if(idx===1)showPronList();else showDiary();};})(i));
+    body.appendChild(d);
+  });
+
+  // Lessons section
+  var sec2=document.createElement('div');sec2.className='sec-label';sec2.textContent='Suas Aulas';body.appendChild(sec2);
+  lessons.forEach(function(l){
+    var done=l.id<cur,active=l.id===cur,locked=l.id>cur;
+    var d=document.createElement('div');
+    d.className='li'+(done?' done':active?' cur':locked?' locked':'');
+    var nc=done?'n-done':active?'n-cur':'n-lock';
+    var icon=done?'✅':active?'▶️':'🔒';
+    d.innerHTML='<div class="li-num '+nc+'">'+l.id+'</div><div class="li-info"><div class="li-title">'+l.title+'</div><div class="li-desc">'+l.desc+'</div></div><div class="li-status">'+icon+'</div>';
+    if(!locked) d.addEventListener('click',(function(lid){return function(){startLesson(lid);};})(l.id));
+    body.appendChild(d);
+  });
+}
+
+function showAdultList(){enterAdult(curUser);}
+
+function startLesson(lid){
+  var lessons=curUser==='fabiano'?FAB_LESSONS:CEL_LESSONS;
+  curLesson=null;
+  for(var i=0;i<lessons.length;i++){if(lessons[i].id===lid){curLesson=lessons[i];break;}}
+  if(!curLesson)return;
+  chatHist=[];chatCount=0;
+  document.getElementById('chat-title').textContent='Aula '+lid+' - '+curLesson.title;
+  document.getElementById('chat-prog').style.width='0%';
+  document.getElementById('done-btn').style.display='none';
+  document.getElementById('chat-body').innerHTML='';
+  document.getElementById('chat-inp').disabled=false;
+  document.getElementById('chat-send').disabled=false;
+  show('s-chat');
+  initChat();
+}
+
+async function initChat(){
+  chatLoading=true;document.getElementById('chat-send').disabled=true;
+  var body=document.getElementById('chat-body');
+  var t=mkTyping();body.appendChild(t);body.scrollTop=body.scrollHeight;
+  var prev='';
+  if(curLesson.id>1){
+    var lessons=curUser==='fabiano'?FAB_LESSONS:CEL_LESSONS;
+    for(var i=0;i<lessons.length;i++){if(lessons[i].id===curLesson.id-1){prev=lessons[i].title;break;}}
+  }
+  var start=prev?'Hello! I am ready to start. Before beginning, please do a quick review of 2 phrases from the previous lesson about '+prev+', then start today\'s lesson.':'Hello! I am ready to start the lesson.';
+  try{
+    var reply=await callAPI(curLesson.sys,[{role:'user',content:start}]);
+    chatHist.push({role:'assistant',content:reply});
+    t.remove();addMsg('chat-body','ai',reply);chatCount++;
+    document.getElementById('chat-prog').style.width='10%';
+  }catch(e){t.remove();addMsg('chat-body','ai','Erro ao conectar. Verifique sua chave da API.');}
+  chatLoading=false;document.getElementById('chat-send').disabled=false;
+}
+
+async function sendChat(){
+  if(chatLoading)return;
+  var inp=document.getElementById('chat-inp');
+  var text=inp.value.trim();if(!text)return;
+  inp.value='';
+  chatHist.push({role:'user',content:text});
+  addMsg('chat-body','user',text);chatCount++;
+  chatLoading=true;document.getElementById('chat-send').disabled=true;
+  var body=document.getElementById('chat-body');
+  var t=mkTyping();body.appendChild(t);body.scrollTop=body.scrollHeight;
+  try{
+    var reply=await callAPI(curLesson.sys,chatHist);
+    chatHist.push({role:'assistant',content:reply});
+    t.remove();addMsg('chat-body','ai',reply);chatCount++;
+    var pct=Math.min(90,Math.round((chatCount/12)*100));
+    document.getElementById('chat-prog').style.width=pct+'%';
+    if(chatCount>=10) document.getElementById('done-btn').style.display='block';
+  }catch(e){t.remove();addMsg('chat-body','ai','Erro de conexao. Tente novamente.');}
+  chatLoading=false;document.getElementById('chat-send').disabled=false;
+}
+
+async function completeLesson(){
+  document.getElementById('done-btn').style.display='none';
+  document.getElementById('chat-inp').disabled=true;
+  document.getElementById('chat-send').disabled=true;
+  var body=document.getElementById('chat-body');
+  var t=mkTyping();body.appendChild(t);body.scrollTop=body.scrollHeight;
+  var lessons=curUser==='fabiano'?FAB_LESSONS:CEL_LESSONS;
+  var next=curLesson.id+1;
+  if(next<=lessons.length){state[curUser].lesson=next;sv(curUser==='fabiano'?'fab_l':'cel_l',next);}
+  try{
+    var sumReq='Generate a lesson summary in Portuguese with: 1) O que voce aprendeu (3 to 5 points) 2) Frases para lembrar (3 phrases) 3) Seus erros mais comuns (be specific) 4) Para praticar antes da proxima aula (2 tips). Be warm and encouraging.';
+    var msgs=chatHist.concat([{role:'user',content:sumReq}]);
+    var sum=await callAPI(curLesson.sys,msgs);
+    t.remove();
+    // Save errors
+    if(sum.toLowerCase().indexOf('erro')>=0||sum.toLowerCase().indexOf('cuidado')>=0){
+      diary[curUser].unshift({lesson:curLesson.id,title:curLesson.title,text:sum.substring(0,300),date:new Date().toLocaleDateString('pt-BR')});
+      if(diary[curUser].length>20)diary[curUser].pop();
+      try{sv(curUser==='fabiano'?'fab_d':'cel_d',JSON.stringify(diary[curUser]));}catch(e){}
+    }
+    var nextLbl=next<=lessons.length?'Proxima: Aula '+next+' →':'Todas concluidas!';
+    var sb=document.getElementById('sum-body');sb.innerHTML='';
+    var box=document.createElement('div');box.className='sum-box';
+    box.innerHTML='<h3>Resumo - Aula '+curLesson.id+'</h3><p>'+esc(sum)+'</p>';
+    sb.appendChild(box);
+    var btn=document.createElement('button');btn.className='sum-next';btn.style.background='var(--green)';btn.style.color='#fff';btn.textContent=nextLbl;
+    btn.addEventListener('click',function(){showAdultList();});
+    sb.appendChild(btn);
+    document.getElementById('chat-prog').style.width='100%';
+    show('s-sum');
+  }catch(e){t.remove();showAdultList();}
+}
+
+// ── EVALUATIONS ───────────────────────────────────────────
+function showEvalList(){
+  var nm=curUser==='fabiano'?'Fabiano':'Celina';
+  document.getElementById('el-name').textContent=nm+' - Avaliacoes';
+  var evals=EVALUATIONS[curUser];
+  var cur=state[curUser].lesson;
+  var gr=grades[curUser];
+  var body=document.getElementById('el-body');body.innerHTML='';
+  evals.forEach(function(ev){
+    var done=gr[ev.id];
+    var avail=cur>ev.after;
+    var d=document.createElement('div');
+    d.className='eval-item'+(done?' done':avail?'':' locked');
+    var gradeHtml=done?'<div class="eval-grade">'+done+'</div>':avail?'<div style="font-size:12px;color:var(--amber);font-weight:600">Disponivel</div>':'<div style="font-size:11px;color:var(--txt3)">Complete a aula '+ev.after+' primeiro</div>';
+    d.innerHTML='<div class="eval-icon">'+ev.icon+'</div><div class="eval-info"><div class="eval-title">'+ev.title+'</div><div class="eval-desc">'+ev.desc+'</div></div>'+gradeHtml;
+    if(avail||done) d.addEventListener('click',(function(eid){return function(){startEval(eid);};})(ev.id));
+    body.appendChild(d);
+  });
+  show('s-eval-list');
+}
+
+function startEval(eid){
+  var evals=EVALUATIONS[curUser];
+  curEval=null;
+  for(var i=0;i<evals.length;i++){if(evals[i].id===eid){curEval=evals[i];break;}}
+  if(!curEval)return;
+  evalHist=[];evalCount=0;
+  document.getElementById('ec-title').textContent=curEval.title;
+  document.getElementById('ec-prog').style.width='0%';
+  document.getElementById('ec-body').innerHTML='';
+  document.getElementById('ec-done-btn').style.display='none';
+  document.getElementById('ec-inp').disabled=false;
+  document.getElementById('ec-send').disabled=false;
+  show('s-eval-chat');
+  evalLoading=true;document.getElementById('ec-send').disabled=true;
+  var nm=curUser==='fabiano'?'Fabiano':'Celina';
+  var body=document.getElementById('ec-body');
+  var t=mkTyping();body.appendChild(t);body.scrollTop=body.scrollHeight;
+  callAPI(curEval.sys,[{role:'user',content:'Hello! I am '+nm+' and I am ready for my evaluation.'}]).then(function(reply){
+    evalHist.push({role:'assistant',content:reply});
+    t.remove();addMsg('ec-body','ai',reply);evalCount++;
+    evalLoading=false;document.getElementById('ec-send').disabled=false;
+  }).catch(function(){t.remove();addMsg('ec-body','ai','Erro ao conectar. Tente novamente.');evalLoading=false;document.getElementById('ec-send').disabled=false;});
+}
+
+async function sendEval(){
+  if(evalLoading)return;
+  var inp=document.getElementById('ec-inp');
+  var text=inp.value.trim();if(!text)return;
+  inp.value='';
+  evalHist.push({role:'user',content:text});
+  addMsg('ec-body','user',text);evalCount++;
+  var pct=Math.min(90,Math.round((evalCount/10)*100));
+  document.getElementById('ec-prog').style.width=pct+'%';
+  evalLoading=true;document.getElementById('ec-send').disabled=true;
+  var body=document.getElementById('ec-body');
+  var t=mkTyping();body.appendChild(t);body.scrollTop=body.scrollHeight;
+  try{
+    var reply=await callAPI(curEval.sys,evalHist);
+    evalHist.push({role:'assistant',content:reply});
+    t.remove();addMsg('ec-body','ai',reply);evalCount++;
+    if(evalCount>=8)document.getElementById('ec-done-btn').style.display='block';
+  }catch(e){t.remove();addMsg('ec-body','ai','Erro de conexao. Tente novamente.');}
+  evalLoading=false;document.getElementById('ec-send').disabled=false;
+}
+
+async function finishEval(){
+  document.getElementById('ec-done-btn').style.display='none';
+  document.getElementById('ec-inp').disabled=true;
+  document.getElementById('ec-send').disabled=true;
+  var body=document.getElementById('ec-body');
+  var t=mkTyping();body.appendChild(t);body.scrollTop=body.scrollHeight;
+  try{
+    var req='Now give my final grade from 1 to 10. Format it exactly as: Grade: X out of 10. Then give stars (1 star for 1-4, 2 stars for 5-7, 3 stars for 8-10), summary of strengths and weaknesses, and an encouraging final message.';
+    var result=await callAPI(curEval.sys,evalHist.concat([{role:'user',content:req}]));
+    t.remove();
+    var gm=result.match(/Grade[^0-9]*([0-9]+)/);
+    var grade=gm?parseInt(gm[1]):7;
+    var stars=grade>=8?'⭐⭐⭐':grade>=5?'⭐⭐':'⭐';
+    grades[curUser][curEval.id]=grade+' de 10';
+    try{sv(curUser==='fabiano'?'fab_g':'cel_g',JSON.stringify(grades[curUser]));}catch(e){}
+    document.getElementById('ec-prog').style.width='100%';
+    var nm=curUser==='fabiano'?'Fabiano':'Celina';
+    var rb=document.getElementById('er-body');rb.innerHTML='';
+    var gb=document.createElement('div');gb.className='grade-box';
+    gb.innerHTML='<div class="grade-stars">'+stars+'</div><div class="grade-num">'+grade+'<span style="font-size:24px">/10</span></div><div class="grade-lbl">'+nm+' - '+curEval.title+'</div>';
+    rb.appendChild(gb);
+    var sb=document.createElement('div');sb.className='sum-box';sb.style.marginTop='10px';
+    sb.innerHTML='<h3>Avaliacao Completa</h3><p>'+esc(result)+'</p>';
+    rb.appendChild(sb);
+    var b1=document.createElement('button');b1.className='sum-next';b1.style.background='var(--green)';b1.style.color='#fff';b1.style.marginTop='10px';b1.textContent='Ver avaliacoes';
+    b1.addEventListener('click',function(){showEvalList();});rb.appendChild(b1);
+    var b2=document.createElement('button');b2.className='sum-next';b2.style.background='var(--blue)';b2.style.color='#fff';b2.style.marginTop='6px';b2.textContent='Continuar estudando →';
+    b2.addEventListener('click',function(){showAdultList();});rb.appendChild(b2);
+    document.getElementById('er-body');
+    show('s-eval-result');
+  }catch(e){t.remove();addMsg('ec-body','ai','Erro ao gerar resultado. Tente novamente.');document.getElementById('ec-done-btn').style.display='block';}
+}
+
+// ── PRONUNCIATION ─────────────────────────────────────────
+function showPronList(){
+  var nm=curUser==='fabiano'?'Fabiano':'Celina';
+  document.getElementById('pl-name').textContent=nm+' - Pronuncia';
+  var body=document.getElementById('pl-body');body.innerHTML='';
+  var sec=document.createElement('div');sec.className='sec-label';sec.textContent='Sessoes de Pronuncia';body.appendChild(sec);
+  PRON_LESSONS.forEach(function(p){
+    var d=document.createElement('div');d.className='li tool';
+    d.innerHTML='<div class="li-num n-tool">🎤</div><div class="li-info"><div class="li-title">'+p.title+'</div><div class="li-desc"><span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;background:var(--blue-l);color:var(--blue-d)">'+p.badge+'</span></div></div><div class="li-status">→</div>';
+    d.addEventListener('click',(function(pid){return function(){startPron(pid);};})(p.id));
+    body.appendChild(d);
+  });
+  show('s-pron-list');
+}
+
+function startPron(pid){
+  curPron=null;
+  for(var i=0;i<PRON_LESSONS.length;i++){if(PRON_LESSONS[i].id===pid){curPron=PRON_LESSONS[i];break;}}
+  if(!curPron)return;
+  pronHist=[];pronCount=0;
+  document.getElementById('pc-title').textContent=curPron.title;
+  document.getElementById('pc-prog').style.width='0%';
+  document.getElementById('pc-body').innerHTML='';
+  document.getElementById('pc-inp').disabled=false;
+  document.getElementById('pc-send').disabled=false;
+  show('s-pron-chat');
+  pronLoading=true;document.getElementById('pc-send').disabled=true;
+  var body=document.getElementById('pc-body');
+  var t=mkTyping();body.appendChild(t);body.scrollTop=body.scrollHeight;
+  callAPI(curPron.sys,[{role:'user',content:'Hello! I want to practice my pronunciation.'}]).then(function(reply){
+    pronHist.push({role:'assistant',content:reply});
+    t.remove();addMsg('pc-body','ai',reply);pronCount++;
+    pronLoading=false;document.getElementById('pc-send').disabled=false;
+  }).catch(function(){t.remove();addMsg('pc-body','ai','Erro ao conectar.');pronLoading=false;document.getElementById('pc-send').disabled=false;});
+}
+
+async function sendPron(){
+  if(pronLoading)return;
+  var inp=document.getElementById('pc-inp');
+  var text=inp.value.trim();if(!text)return;
+  inp.value='';
+  pronHist.push({role:'user',content:text});
+  addMsg('pc-body','user',text);pronCount++;
+  var pct=Math.min(90,Math.round((pronCount/12)*100));
+  document.getElementById('pc-prog').style.width=pct+'%';
+  pronLoading=true;document.getElementById('pc-send').disabled=true;
+  var body=document.getElementById('pc-body');
+  var t=mkTyping();body.appendChild(t);body.scrollTop=body.scrollHeight;
+  try{
+    var reply=await callAPI(curPron.sys,pronHist);
+    pronHist.push({role:'assistant',content:reply});
+    t.remove();addMsg('pc-body','ai',reply);pronCount++;
+  }catch(e){t.remove();addMsg('pc-body','ai','Erro de conexao.');}
+  pronLoading=false;document.getElementById('pc-send').disabled=false;
+}
+
+// ── DIARY ─────────────────────────────────────────────────
+function showDiary(){
+  var nm=curUser==='fabiano'?'Fabiano':'Celina';
+  document.getElementById('dr-name').textContent=nm+' - Diario de Erros';
+  var errors=diary[curUser];
+  var body=document.getElementById('dr-body');body.innerHTML='';
+  if(!errors||errors.length===0){
+    var d=document.createElement('div');d.className='diary-empty';
+    d.innerHTML='<div style="font-size:48px">📒</div><p>Nenhum erro registrado ainda.<br>Complete aulas para ver seus erros aqui.</p>';
+    body.appendChild(d);
+  }else{
+    errors.forEach(function(e){
+      var d=document.createElement('div');d.className='err-card';
+      d.innerHTML='<div class="err-lesson">Aula '+e.lesson+': '+e.title+'</div><div class="err-text">'+esc(e.text.substring(0,250))+'...</div><div class="err-date">'+e.date+'</div>';
+      body.appendChild(d);
+    });
+  }
+  show('s-diary');
+}
+function clearDiary(){
+  if(!confirm('Limpar todo o diario de erros?'))return;
+  diary[curUser]=[];
+  try{sv(curUser==='fabiano'?'fab_d':'cel_d','[]');}catch(e){}
+  showDiary();
+}
+
+// ── KIDS ──────────────────────────────────────────────────
+function enterKids(kid){
+  if(kid)curKid=kid;
+  var nm=curKid==='francisco'?'Francisco':'Maria';
+  var ln=state[curKid].lesson;
+  if(ln>KIDS_LESSONS.length)ln=KIDS_LESSONS.length;
+  kidsLesson=KIDS_LESSONS[ln-1];
+  kidsWords=kidsLesson.words.slice();
+  kidsIdx=0;kidsScore=0;
+  document.getElementById('ki-name').textContent='🧒 '+nm;
+  document.getElementById('ki-badge').textContent='Aula '+kidsLesson.id;
+  show('s-kids');
+  showLearn();
+}
+
+function showLearn(){
+  var w=kidsWords[kidsIdx];
+  var dots=buildDots(kidsWords.length,kidsIdx);
+  var body=document.getElementById('ki-body');body.innerHTML='';
+  var d=document.createElement('div');d.className='k-dots';d.innerHTML=dots;body.appendChild(d);
+  var ph=document.createElement('div');ph.className='k-phase';ph.textContent='Aprenda essa palavra!';body.appendChild(ph);
+  var em=document.createElement('div');em.className='k-em';em.textContent=w.e;em.addEventListener('click',function(){speak(w.n,0.75);});body.appendChild(em);
+  var wd=document.createElement('div');wd.className='k-word';wd.textContent=w.n;body.appendChild(wd);
+  var pt=document.createElement('div');pt.className='k-pt';pt.textContent=w.p;body.appendChild(pt);
+  var sb=document.createElement('button');sb.className='k-speak';sb.textContent='🔊 Ouvir';sb.addEventListener('click',function(){speak(w.n,0.75);});body.appendChild(sb);
+  var nb=document.createElement('button');nb.className='k-next';nb.textContent='Proximo →';nb.addEventListener('click',function(){kidsIdx++;if(kidsIdx>=kidsWords.length){kidsIdx=0;showQuiz();}else{showLearn();}});body.appendChild(nb);
+  setTimeout(function(){speak(w.n,0.75);},350);
+}
+
+function buildDots(total,cur){
+  var s='';
+  for(var i=0;i<total;i++) s+='<div class="kd'+(i<cur?' done':i===cur?' cur':'')+'" ></div>';
+  return s;
+}
+
+function showQuiz(){
+  var w=kidsWords[kidsIdx];
+  kidsCorrect=w.n;
+  var pool=[];
+  for(var i=0;i<kidsWords.length;i++){if(kidsWords[i].n!==w.n)pool.push(kidsWords[i]);}
+  pool.sort(function(){return Math.random()-.5;});
+  var opts=pool.slice(0,3).concat([w]);
+  opts.sort(function(){return Math.random()-.5;});
+  var dots=buildDots(kidsWords.length,kidsIdx);
+  var body=document.getElementById('ki-body');body.innerHTML='';
+  var d=document.createElement('div');d.className='k-dots';d.innerHTML=dots;body.appendChild(d);
+  var ph=document.createElement('div');ph.className='k-phase';ph.innerHTML='Qual e o <b>'+w.n+'</b>?';body.appendChild(ph);
+  var og=document.createElement('div');og.className='k-opts';
+  opts.forEach(function(o){
+    var btn=document.createElement('div');btn.className='k-opt';btn.textContent=o.e;
+    btn.addEventListener('click',function(){checkKids(btn,o.n);});
+    og.appendChild(btn);
+  });
+  body.appendChild(og);
+  var fb=document.createElement('div');fb.className='k-fb';fb.id='k-fb';body.appendChild(fb);
+  speak(w.n,0.8);
+}
+
+function checkKids(el,chosen){
+  var opts=document.querySelectorAll('.k-opt');
+  for(var i=0;i<opts.length;i++) opts[i].onclick=null;
+  var ok=chosen===kidsCorrect;
+  if(ok)kidsScore++;
+  document.getElementById('k-fb').textContent=ok?'Correct! Great job!':'It\'s '+kidsCorrect+'!';
+  document.getElementById('k-fb').className='k-fb '+(ok?'ok':'no');
+  el.className='k-opt '+(ok?'ok':'no');
+  if(!ok){
+    var all=document.querySelectorAll('.k-opt');
+    for(var i=0;i<all.length;i++){if(all[i].textContent===kidsWords.filter(function(x){return x.n===kidsCorrect;})[0].e)all[i].className='k-opt ok';}
+  }
+  speak(kidsCorrect,0.8);
+  setTimeout(function(){
+    kidsIdx++;
+    if(kidsIdx>=kidsWords.length)showKidsDone();
+    else showQuiz();
+  },1300);
+}
+
+function showKidsDone(){
+  var total=kidsWords.length;
+  var passed=kidsScore>=Math.ceil(total*0.6);
+  var stars=kidsScore>=total?'⭐⭐⭐':passed?'⭐⭐':'⭐';
+  var nm=curKid==='francisco'?'Francisco':'Maria';
+  if(passed&&state[curKid].lesson<KIDS_LESSONS.length){
+    state[curKid].lesson++;
+    sv(curKid==='francisco'?'fran_l':'mari_l',state[curKid].lesson);
+    updateHome();
+  }
+  var hasNext=state[curKid].lesson<=KIDS_LESSONS.length&&passed;
+  var body=document.getElementById('ki-body');body.innerHTML='';
+  var st=document.createElement('div');st.className='k-stars';st.textContent=stars;body.appendChild(st);
+  var sc=document.createElement('div');sc.className='k-word';sc.textContent=kidsScore+' de '+total;body.appendChild(sc);
+  var msg=document.createElement('div');msg.className='k-phase';
+  msg.textContent=kidsScore>=total?nm+', perfeito!':passed?'Muito bem, '+nm+'!':'Quase, '+nm+'! Tenta de novo!';
+  body.appendChild(msg);
+  if(hasNext){
+    var nb=document.createElement('button');nb.className='k-next';nb.textContent='Proxima Aula →';
+    nb.addEventListener('click',function(){enterKids(null);});body.appendChild(nb);
+  }
+  var rb=document.createElement('button');rb.className='k-next';rb.style.background='var(--amber)';rb.style.marginTop='8px';rb.textContent='🔄 Repetir esta aula';
+  rb.addEventListener('click',function(){kidsIdx=0;kidsScore=0;kidsWords=kidsLesson.words.slice();showLearn();});body.appendChild(rb);
+  var hb=document.createElement('button');hb.className='k-speak';hb.style.marginTop='8px';hb.textContent='← Inicio';
+  hb.addEventListener('click',function(){goHome();});body.appendChild(hb);
+  speak(kidsScore>=total?'Perfect! Amazing job!':passed?'Great job!':'Try again!',1);
+}
+
+// ── KARAOKE ───────────────────────────────────────────────
+function showKarList(){
+  var body=document.getElementById('kl-body');body.innerHTML='';
+  KARAOKE_SONGS.forEach(function(s){
+    var d=document.createElement('div');d.className='kar-item';
+    d.innerHTML='<div class="kar-item-icon">'+s.icon+'</div><div><div class="kar-item-title">'+s.title+'</div><div class="kar-item-desc">'+s.words.length+' palavras - Toque para ouvir</div></div>';
+    d.addEventListener('click',(function(sid){return function(){startKar(sid);};})(s.id));
+    body.appendChild(d);
+  });
+  show('s-kar-list');
+}
+
+function startKar(sid){
+  curKar=null;
+  for(var i=0;i<KARAOKE_SONGS.length;i++){if(KARAOKE_SONGS[i].id===sid){curKar=KARAOKE_SONGS[i];break;}}
+  if(!curKar)return;
+  karIdx=0;
+  document.getElementById('kp-name').textContent=curKar.title;
+  show('s-kar-play');
+  showKarWord();
+}
+
+function showKarWord(){
+  clearTimeout(karAuto);
+  var w=curKar.words[karIdx];
+  var total=curKar.words.length;
+  var dots=buildDots(total,karIdx);
+  var isLast=karIdx>=total-1;
+  var body=document.getElementById('kp-body');body.innerHTML='';
+  var dd=document.createElement('div');dd.className='k-dots';dd.innerHTML=dots;body.appendChild(dd);
+  var em=document.createElement('div');em.className='kar-em';em.textContent=w.e;
+  em.addEventListener('click',function(){clearTimeout(karAuto);speak(w.w.replace('!',''),0.7);if(!isLast)karAuto=setTimeout(function(){karIdx++;showKarWord();},3000);});
+  body.appendChild(em);
+  var wd=document.createElement('div');wd.className='kar-word';wd.textContent=w.w;body.appendChild(wd);
+  var tap=document.createElement('div');tap.className='kar-tap';tap.textContent='Toque na imagem para ouvir 🔊';body.appendChild(tap);
+  if(isLast){
+    var fb=document.createElement('button');fb.className='k-next';fb.textContent='🎉 Fim!';fb.addEventListener('click',function(){showKarEnd();});body.appendChild(fb);
+  }else{
+    var nx=document.createElement('button');nx.className='k-next';nx.textContent='Proximo →';nx.addEventListener('click',function(){clearTimeout(karAuto);karIdx++;showKarWord();});body.appendChild(nx);
+  }
+  setTimeout(function(){speak(w.w.replace('!',''),0.7);},350);
+  if(!isLast) karAuto=setTimeout(function(){karIdx++;showKarWord();},3200);
+}
+
+function showKarEnd(){
+  clearTimeout(karAuto);
+  var body=document.getElementById('kp-body');body.innerHTML='';
+  var em=document.createElement('div');em.className='kar-em';em.textContent='🎉';body.appendChild(em);
+  var wd=document.createElement('div');wd.className='kar-word';wd.textContent='Amazing!';body.appendChild(wd);
+  var ph=document.createElement('div');ph.className='k-phase';ph.textContent='Voce aprendeu tudo!';body.appendChild(ph);
+  var rb=document.createElement('button');rb.className='k-next';rb.textContent='Repetir 🔄';rb.addEventListener('click',function(){karIdx=0;showKarWord();});body.appendChild(rb);
+  var lb=document.createElement('button');lb.className='k-speak';lb.style.marginTop='8px';lb.textContent='Outras musicas 🎵';lb.addEventListener('click',function(){showKarList();});body.appendChild(lb);
+  speak('Amazing! Great job!',0.9);
+}
+</script>
+</body>
+</html>
