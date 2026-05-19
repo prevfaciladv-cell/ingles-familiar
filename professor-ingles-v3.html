@@ -610,9 +610,8 @@ async function callAPI(sys,msgs){
     return {role: m.role==='assistant'?'model':'user', parts:[{text:m.content}]};
   });
   // Prepend system as first user message if not already there
-  var allMsgs = [{role:'user',parts:[{text:sys+'
-
-Respond as instructed above.'}]},{role:'model',parts:[{text:'Understood! I will follow those instructions.'}]}].concat(geminiMsgs);
+  var sysMsg = sys + ' Respond as instructed above.';
+  var allMsgs = [{role:'user',parts:[{text:sysMsg}]},{role:'model',parts:[{text:'Understood! I will follow those instructions.'}]}].concat(geminiMsgs);
   
   var url='https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key='+apiKey;
   var r=await fetch(url,{
