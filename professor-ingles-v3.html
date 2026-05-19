@@ -636,8 +636,12 @@ window.onload=function(){
   try{grades.fabiano=JSON.parse(ld('fab_g','{}'))||{};}catch(e){}
   try{grades.celina=JSON.parse(ld('cel_g','{}'))||{};}catch(e){}
 
-  document.getElementById('btn-enter').addEventListener('click',function(e){e.preventDefault();doLogin();});
-  document.getElementById('btn-skip').addEventListener('click',function(e){e.preventDefault();goHome();});
+  var btnEnter = document.getElementById('btn-enter');
+  btnEnter.addEventListener('click',function(e){e.preventDefault();doLogin();});
+  btnEnter.addEventListener('touchend',function(e){e.preventDefault();doLogin();});
+  var btnSkip = document.getElementById('btn-skip');
+  btnSkip.addEventListener('click',function(e){e.preventDefault();goHome();});
+  btnSkip.addEventListener('touchend',function(e){e.preventDefault();goHome();});
   document.getElementById('api-inp').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
   document.getElementById('pc-fab').addEventListener('click',function(){enterAdult('fabiano');});
   document.getElementById('pc-cel').addEventListener('click',function(){enterAdult('celina');});
