@@ -636,7 +636,7 @@ window.onload=function(){
   document.getElementById('pc-fran').addEventListener('click',function(){enterKids('francisco');});
   document.getElementById('pc-mari').addEventListener('click',function(){enterKids('maria');});
   document.getElementById('pc-kar').addEventListener('click',function(){showKarList();});
-  document.getElementById('cfg-link').addEventListener('click',function(){showSetup();});
+  document.getElementById('cfg-link').addEventListener('click',function(){resetKey();});
   document.getElementById('al-back').addEventListener('click',function(){goHome();});
   document.getElementById('chat-back').addEventListener('click',function(){showAdultList();});
   document.getElementById('sum-back').addEventListener('click',function(){showAdultList();});
@@ -672,6 +672,12 @@ function updateHome(){
   document.getElementById('mari-badge').textContent='Aula '+Math.min(ml,KIDS_LESSONS.length)+' de '+KIDS_LESSONS.length;
 }
 
+function resetKey(){
+  try{ localStorage.removeItem('eng_key'); }catch(e){}
+  apiKey='';
+  document.getElementById('api-inp').value='';
+  show('s-setup');
+}
 function doLogin(){
   var v=document.getElementById('api-inp').value.trim();
   var msg=document.getElementById('setup-msg');
@@ -764,7 +770,13 @@ async function initChat(){
     chatHist.push({role:'assistant',content:reply});
     t.remove();addMsg('chat-body','ai',reply);chatCount++;
     document.getElementById('chat-prog').style.width='10%';
-  }catch(e){t.remove();addMsg('chat-body','ai','Erro ao conectar. Verifique sua chave da API.');}
+  }catch(e){
+    t.remove();
+    var errDiv=document.createElement('div');errDiv.className='msg ai';
+    errDiv.innerHTML='<div class="bubble">Erro ao conectar. Chave da API invalida ou sem creditos.<br><br><button onclick="resetKey()" style="padding:10px 20px;background:#185FA5;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;margin-top:6px">Trocar chave da API</button></div>';
+    document.getElementById('chat-body').appendChild(errDiv);
+    document.getElementById('chat-body').scrollTop=document.getElementById('chat-body').scrollHeight;
+  }
   chatLoading=false;document.getElementById('chat-send').disabled=false;
 }
 
