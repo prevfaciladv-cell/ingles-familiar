@@ -177,9 +177,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg
     <div class="logo">🏠</div>
     <h1>Professor de Inglês Familiar</h1>
     <p>Cole sua chave do Google Gemini — <b>100% gratuita</b>.</p>
-    <input class="setup-inp" id="api-inp" type="text" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" placeholder="AIza...">
-    <div class="setup-msg" id="setup-msg"></div>
-    <a href="javascript:void(0)" id="btn-enter" class="abtn abtn-blue">Entrar →</a>
+    <form action="#" onsubmit="doLogin();return false;" style="width:100%;display:flex;flex-direction:column;gap:10px">
+      <input class="setup-inp" id="api-inp" type="text" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" placeholder="AIza..." style="width:100%">
+      <div class="setup-msg" id="setup-msg"></div>
+      <input type="submit" value="Entrar →" style="display:block;width:100%;padding:18px;background:#185FA5;color:#fff;border:none;border-radius:10px;font-size:17px;font-weight:700;cursor:pointer;-webkit-appearance:none;appearance:none">
+    </form>
     <a href="javascript:void(0)" id="btn-skip" class="abtn abtn-ghost">Continuar sem IA (só modo infantil)</a>
     <p style="font-size:12px;color:var(--txt3);text-align:center;line-height:1.6">Obtenha grátis em <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--blue)">aistudio.google.com/apikey</a><br>Salva só no seu navegador. Totalmente gratuito.</p>
   </div>
@@ -627,6 +629,7 @@ async function callAPI(sys,msgs){
 // ── INIT ──────────────────────────────────────────────────
 window.onload=function(){
   try{apiKey=ld('eng_key','');}catch(e){}
+
   state.fabiano.lesson=parseInt(ld('fab_l','1'));
   state.celina.lesson=parseInt(ld('cel_l','1'));
   state.francisco.lesson=parseInt(ld('fran_l','1'));
@@ -636,13 +639,11 @@ window.onload=function(){
   try{grades.fabiano=JSON.parse(ld('fab_g','{}'))||{};}catch(e){}
   try{grades.celina=JSON.parse(ld('cel_g','{}'))||{};}catch(e){}
 
-  var btnEnter = document.getElementById('btn-enter');
-  btnEnter.addEventListener('click',function(e){e.preventDefault();doLogin();});
-  btnEnter.addEventListener('touchend',function(e){e.preventDefault();doLogin();});
   var btnSkip = document.getElementById('btn-skip');
-  btnSkip.addEventListener('click',function(e){e.preventDefault();goHome();});
-  btnSkip.addEventListener('touchend',function(e){e.preventDefault();goHome();});
-  document.getElementById('api-inp').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
+  if(btnSkip){
+    btnSkip.addEventListener('click',function(e){e.preventDefault();goHome();});
+    btnSkip.addEventListener('touchend',function(e){e.preventDefault();goHome();});
+  }
   document.getElementById('pc-fab').addEventListener('click',function(){enterAdult('fabiano');});
   document.getElementById('pc-cel').addEventListener('click',function(){enterAdult('celina');});
   document.getElementById('pc-fran').addEventListener('click',function(){enterKids('francisco');});
@@ -691,13 +692,19 @@ function resetKey(){
   show('s-setup');
 }
 function doLogin(){
-  var v=document.getElementById('api-inp').value.trim();
-  var msg=document.getElementById('setup-msg');
-  if(!v||v.length<10){msg.textContent='Cole sua chave do Google no campo acima.';msg.style.color='#A32D2D';return;}
-  apiKey=v;sv('eng_key',v);
-  msg.textContent='Entrando...';msg.style.color='var(--green-d)';
-  setTimeout(function(){goHome();},300);
+  var inp = document.getElementById('api-inp');
+  var v = inp ? inp.value.trim() : '';
+  var msg = document.getElementById('setup-msg');
+  if(!v || v.length < 10){
+    if(msg){ msg.textContent='Cole sua chave AIza... no campo acima.'; msg.style.color='#A32D2D'; }
+    return;
+  }
+  apiKey = v;
+  try{ localStorage.setItem('eng_key', v); }catch(e){}
+  if(msg){ msg.textContent='Chave salva! Entrando...'; msg.style.color='#0F6E56'; }
+  setTimeout(function(){ updateHome(); show('s-home'); }, 800);
 }
+
 function showSetup(){document.getElementById('api-inp').value=apiKey||'';show('s-setup');}
 function goHome(){updateHome();show('s-home');}
 
