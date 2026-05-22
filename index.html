@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#06091A">
+<title>FluentAI – American English</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#06091A;--surf:#0D1326;--card:#121B3A;--card2:#18224A;
+  --g:#3BFFA0;--g10:rgba(59,255,160,.10);--g20:rgba(59,255,160,.20);
+  --acc:#FFB547;--acc10:rgba(255,181,71,.10);
+  --bl:#5B9CF6;--bl10:rgba(91,156,246,.10);
+  --pu:#A78BFA;--pu10:rgba(167,139,250,.10);
+  --rd:#FF6B6B;--rd10:rgba(255,107,107,.10);
+  --t:#E8F0FF;--t2:#7A8DB5;--t3:#2E3D60;
+  --br:#1C2B50;--r:16px;--rx:26px;--rs:12px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased}
+html,body{height:100%;overflow:hidden}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t);max-width:430px;margin:0 auto;height:100svh;overflow:hidden;position:relative}
+.screen{position:absolute;inset:0;display:none;flex-direction:column;overflow:hidden;background:var(--bg)}
+.screen.active{display:flex}
+@keyframes sIn{from{transform:translateX(100%);opacity:.4}to{transform:translateX(0);opacity:1}}
+@keyframes sBack{from{transform:translateX(-15%);opacity:.2}to{transform:translateX(0);opacity:1}}
+@keyframes fUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.si{animation:sIn .28s cubic-bezier(.4,0,.2,1) both}
+.sb{animation:sBack .28s cubic-bezier(.4,0,.2,1) both}
+.fu{animation:fUp .22s ease both}
+.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.scroll::-webkit-scrollbar{display:none}
+h1{font-family:'Sora',sans-serif;font-size:28px;font-weight:800;line-height:1.15}
+h2{font-family:'Sora',sans-serif;font-size:22px;font-weight:700}
+h3{font-family:'Sora',sans-serif;font-size:16px;font-weight:700}
+.lbl{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--t2)}
+.dim{color:var(--t2)}.sm{font-size:13px}.xs{font-size:11px}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:15px 24px;border-radius:var(--rx);border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;transition:all .15s;-webkit-appearance:none;position:relative;overflow:hidden}
+.btn:active{transform:scale(.95)}
+.btn-p{background:var(--g);color:#021A0D}
+.btn-o{background:transparent;color:var(--g);border:2px solid var(--g)}
+.btn-ghost{background:var(--card);color:var(--t);border:1px solid var(--br)}
+.btn-full{width:100%}
+.btn-sm{padding:9px 18px;font-size:13px;border-radius:22px;font-weight:600}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.bg{background:var(--g10);color:var(--g)}.ba{background:var(--acc10);color:var(--acc)}
+.bb{background:var(--bl10);color:var(--bl)}.bp{background:var(--pu10);color:var(--pu)}
+.br-c{background:var(--rd10);color:var(--rd)}
+.input{width:100%;background:var(--card2);border:1.5px solid var(--br);border-radius:var(--rs);padding:13px 16px;color:var(--t);font-family:'DM Sans',sans-serif;font-size:15px;outline:none;transition:border-color .2s}
+.input:focus{border-color:var(--g)}.input::placeholder{color:var(--t3)}
+textarea.input{resize:none;line-height:1.5}
+.prog-track{height:5px;background:var(--br);border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;background:var(--g);border-radius:3px;transition:width .7s cubic-bezier(.4,0,.2,1)}
+.spin{width:22px;height:22px;border:2.5px solid var(--br);border-top-color:var(--g);border-radius:50%;animation:spin .7s linear infinite}
+/* NAV */
+.nav{display:flex;background:var(--surf);border-top:1px solid var(--br);padding-top:10px;padding-bottom:env(safe-area-inset-bottom,20px);flex-shrink:0}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 0;cursor:pointer;transition:all .15s;background:none;border:none;color:var(--t2)}
+.nav-btn.on{color:var(--g)}.nav-btn svg{width:22px;height:22px;stroke-width:1.8}
+.nav-lbl{font-size:10px;font-weight:500}
+/* TOP BAR */
+.topbar{padding:12px 20px;padding-top:calc(env(safe-area-inset-top,44px) + 8px);background:var(--surf);border-bottom:1px solid var(--br);display:flex;align-items:center;gap:12px;flex-shrink:0}
+.topbar-title{flex:1}.topbar-title h3{font-size:16px;margin-bottom:1px}.topbar-title p{font-size:12px;color:var(--t2)}
+.back{display:flex;align-items:center;gap:4px;background:none;border:none;color:var(--g);font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;padding:0;flex-shrink:0}
+.back svg{width:20px;height:20px;stroke-width:2.2;stroke:currentColor;fill:none}
+/* CHAT */
+.chat{flex:1;overflow-y:auto;padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.chat::-webkit-scrollbar{display:none}
+.msg{display:flex;gap:10px;animation:fUp .2s ease both}
+.msg.u{flex-direction:row-reverse}
+.bubble{max-width:80%;padding:12px 15px;border-radius:18px;font-size:15px;line-height:1.55}
+.msg.ai .bubble{background:var(--card2);border:1px solid var(--br);border-bottom-left-radius:4px}
+.msg.u .bubble{background:var(--g);color:#021A0D;border-bottom-right-radius:4px;font-weight:500}
+.msg-time{font-size:10px;color:var(--t3);margin-top:3px;padding:0 3px}
+.msg.u .msg-time{text-align:right}
+.ava{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--g),var(--bl));display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#021A0D;font-family:'Sora',sans-serif;flex-shrink:0;box-shadow:0 4px 14px var(--g20)}
+.typing span{width:7px;height:7px;background:var(--t2);border-radius:50%;animation:pulse .85s ease infinite;display:inline-block}
+.typing span:nth-child(2){animation-delay:.14s}.typing span:nth-child(3){animation-delay:.28s}
+/* CHAT INPUT */
+.chat-bar{background:var(--surf);border-top:1px solid var(--br);padding:10px 14px;padding-bottom:calc(env(safe-area-inset-bottom,20px) + 6px);flex-shrink:0}
+.chat-row{display:flex;align-items:flex-end;gap:8px}
+.chat-ta{flex:1;background:var(--card2);border:1.5px solid var(--br);border-radius:22px;padding:10px 16px;color:var(--t);font-family:'DM Sans',sans-serif;font-size:15px;outline:none;resize:none;min-height:44px;max-height:110px;transition:border-color .2s;line-height:1.4}
+.chat-ta:focus{border-color:var(--g)}.chat-ta::placeholder{color:var(--t3)}
+.ibt{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;transition:all .14s;flex-shrink:0}
+.ibt:active{transform:scale(.86)}.ibt.send{background:var(--g)}.ibt.send svg{stroke:#021A0D}
+.ibt.mic{background:var(--card2);border:1.5px solid var(--br)}
+.ibt.mic.rec{background:var(--rd);border-color:var(--rd);animation:pulse .8s ease infinite}
+.ibt svg{width:20px;height:20px;stroke:var(--t2);stroke-width:2;fill:none}
+/* ACTIVITY CARDS embedded in chat */
+.act-card{background:var(--card);border:1.5px solid var(--br);border-radius:16px;padding:16px;margin:4px 0;animation:fUp .3s ease}
+.act-card.act-active{border-color:var(--g)}
+.act-title{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.act-icon{font-size:20px}.act-name{font-family:'Sora',sans-serif;font-size:14px;font-weight:700}
+/* word highlight */
+.corr-inline{background:var(--rd10);border:1px solid rgba(255,107,107,.25);border-radius:8px;padding:8px 12px;margin-top:8px;font-size:13px;line-height:1.5}
+.corr-wrong{color:var(--rd);text-decoration:line-through}.corr-right{color:var(--g);font-weight:600}
+.hint-inline{background:var(--g10);border:1px solid rgba(59,255,160,.18);border-radius:8px;padding:8px 12px;margin-top:8px;font-size:13px;line-height:1.5;color:var(--t2)}
+/* FLASHCARD */
+.fc{background:var(--card);border:2px solid var(--br);border-radius:18px;padding:28px 20px;text-align:center;cursor:pointer;transition:all .25s;min-height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.fc.revealed{border-color:var(--g);background:var(--g10)}
+.fc-word{font-family:'Sora',sans-serif;font-size:26px;font-weight:800;margin-bottom:6px}
+.fc-ipa{font-size:13px;color:var(--bl);margin-bottom:8px}
+.fc-def{font-size:15px;color:var(--t2);display:none;line-height:1.5}
+.srs-row{display:flex;gap:8px;margin-top:10px}
+.srs-b{flex:1;padding:10px 6px;border-radius:10px;border:1.5px solid var(--br);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .14s;text-align:center;background:none}
+.srs-b:active{transform:scale(.93)}
+.srs-b.f{background:var(--rd10);color:var(--rd);border-color:rgba(255,107,107,.3)}
+.srs-b.h{background:var(--acc10);color:var(--acc);border-color:rgba(255,181,71,.3)}
+.srs-b.g{background:var(--bl10);color:var(--bl);border-color:rgba(91,156,246,.3)}
+.srs-b.e{background:var(--g10);color:var(--g);border-color:rgba(59,255,160,.3)}
+/* SHADOWING */
+.shadow-text-block{font-size:16px;line-height:1.75;color:var(--t);background:var(--card2);border:1px solid var(--br);border-radius:12px;padding:14px;margin:10px 0;font-style:italic}
+.score-ring{width:80px;height:80px;border-radius:50%;border:4px solid var(--g);background:var(--g10);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 12px}
+.score-num{font-family:'Sora',sans-serif;font-size:26px;font-weight:800;color:var(--g);line-height:1}
+.word-tag{display:inline-block;padding:3px 8px;border-radius:6px;font-size:13px;font-weight:500;margin:2px}
+.wt-ok{background:var(--g10);color:var(--g)}.wt-miss{background:var(--rd10);color:var(--rd)}
+/* DICTATION */
+.dict-words{display:flex;flex-wrap:wrap;gap:4px;margin:10px 0}
+.dw{padding:4px 10px;border-radius:8px;font-size:14px;font-weight:500}
+.dw-ok{background:var(--g10);color:var(--g)}.dw-no{background:var(--rd10);color:var(--rd);text-decoration:line-through}.dw-miss{background:var(--acc10);color:var(--acc)}
+/* MINIMAL PAIRS */
+.pair-row{display:flex;gap:12px;margin:10px 0}
+.pair-btn{flex:1;background:var(--card2);border:2px solid var(--br);border-radius:14px;padding:16px 10px;text-align:center;cursor:pointer;transition:all .2s;font-family:'Sora',sans-serif}
+.pair-btn:active{transform:scale(.94)}
+.pair-btn.pb-ok{border-color:var(--g);background:var(--g10)}
+.pair-btn.pb-no{border-color:var(--rd);background:var(--rd10)}
+.pair-btn.pb-play{border-color:var(--bl);background:var(--bl10);animation:pulse .6s ease}
+.pb-word{font-size:22px;font-weight:800;margin-bottom:4px}
+.pb-ipa{font-size:11px;color:var(--t2)}
+/* PHASE STRIP */
+.phase-strip{display:flex;align-items:center;gap:6px;padding:10px 18px;background:var(--surf);border-bottom:1px solid var(--br);overflow-x:auto;flex-shrink:0}
+.phase-strip::-webkit-scrollbar{display:none}
+.ph-dot{display:flex;flex-direction:column;align-items:center;gap:3px;flex-shrink:0;cursor:default}
+.ph-circle{width:28px;height:28px;border-radius:50%;background:var(--br);display:flex;align-items:center;justify-content:center;font-size:12px;transition:all .4s;border:2px solid transparent}
+.ph-circle.done{background:var(--g);border-color:var(--g)}
+.ph-circle.active{background:var(--card2);border-color:var(--g);animation:pulse 1.4s ease infinite}
+.ph-label{font-size:9px;color:var(--t3);font-weight:500;white-space:nowrap}
+.ph-dot.done .ph-label{color:var(--g)}.ph-dot.active .ph-label{color:var(--t2)}
+.ph-line{flex:1;height:2px;background:var(--br);border-radius:1px;min-width:12px}
+.ph-line.done{background:var(--g)}
+/* LEVEL SELECT */
+.lvl-card{background:var(--card);border:2px solid var(--br);border-radius:var(--r);padding:18px;cursor:pointer;transition:all .17s;margin-bottom:10px}
+.lvl-card.sel,.lvl-card:active{border-color:var(--g);background:var(--g10)}
+.lvl-chk{width:22px;height:22px;border-radius:50%;background:var(--g);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .17s;flex-shrink:0}
+.lvl-chk svg{width:12px;height:12px;stroke:white;stroke-width:3}.lvl-card.sel .lvl-chk{opacity:1}
+/* DASHBOARD */
+.dash-hero{padding:20px;padding-top:calc(env(safe-area-inset-top,44px)+14px)}
+.streak-pill{display:inline-flex;align-items:center;gap:6px;background:var(--acc10);border:1px solid rgba(255,181,71,.25);border-radius:20px;padding:5px 14px;color:var(--acc);font-weight:700;font-size:15px}
+.start-btn{background:linear-gradient(135deg,var(--g) 0%,#2DD4BF 100%);border:none;border-radius:var(--rx);width:100%;padding:20px;cursor:pointer;font-family:'Sora',sans-serif;font-size:18px;font-weight:800;color:#021A0D;display:flex;align-items:center;justify-content:space-between;transition:all .2s;box-shadow:0 12px 40px var(--g20)}
+.start-btn:active{transform:scale(.97);box-shadow:0 6px 20px var(--g20)}
+.dash-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+.stat-card{background:var(--card);border:1px solid var(--br);border-radius:var(--r);padding:14px;text-align:center}
+.stat-n{font-family:'Sora',sans-serif;font-size:22px;font-weight:800;line-height:1}
+.adaptive-box{background:var(--card);border:1px solid var(--br);border-radius:var(--r);padding:14px;margin-top:12px}
+.adap-dots{display:flex;gap:6px;margin-top:8px}
+.adap-dot{flex:1;height:6px;border-radius:3px;background:var(--br);transition:background .5s}
+.adap-dot.on{background:var(--g)}
+.prev-lesson{background:var(--card);border:1px solid var(--br);border-radius:var(--r);padding:14px;margin-top:12px}
+/* PROFILE */
+.p-hero{background:var(--card);border:1px solid var(--br);border-radius:var(--r);padding:22px;text-align:center;margin-bottom:14px}
+.p-ava{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--g),var(--bl));display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-size:26px;font-weight:800;color:#021A0D;margin:0 auto 12px;box-shadow:0 8px 24px var(--g20)}
+.ep-bar{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.ep-lbl{font-size:12px;color:var(--t2);width:90px;flex-shrink:0}
+.ep-track{flex:1;height:8px;background:var(--br);border-radius:4px;overflow:hidden}
+.ep-fill{height:100%;background:var(--rd);border-radius:4px;transition:width .6s}
+.ep-cnt{font-size:12px;color:var(--rd);width:24px;text-align:right;flex-shrink:0}
+.set-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--br);cursor:pointer}
+.set-row:last-child{border-bottom:none}
+.tog{width:46px;height:26px;border-radius:13px;background:var(--br);position:relative;cursor:pointer;transition:background .2s;border:none;flex-shrink:0}
+.tog.on{background:var(--g)}.tog::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:white;transition:transform .2s}
+.tog.on::after{transform:translateX(20px)}
+.ach-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.ach{background:var(--card);border:1px solid var(--br);border-radius:var(--rs);padding:10px;text-align:center}
+.ach.locked{opacity:.3}.ach-i{font-size:22px;margin-bottom:3px}.ach-n{font-size:9px;color:var(--t2);line-height:1.3}
+/* VOCAB */
+.vtabs{display:flex;background:var(--surf);border-bottom:1px solid var(--br);flex-shrink:0}
+.vtab{flex:1;padding:12px;text-align:center;font-size:14px;font-weight:500;cursor:pointer;border:none;background:none;color:var(--t2);border-bottom:2px solid transparent;transition:all .17s}
+.vtab.on{color:var(--g);border-bottom-color:var(--g)}
+.vi{display:flex;align-items:center;gap:12px;padding:14px 20px;border-bottom:1px solid var(--br)}
+/* LESSON END */
+.end-card{background:linear-gradient(135deg,var(--card) 0%,var(--card2) 100%);border:1px solid var(--br);border-radius:20px;padding:24px;text-align:center;margin:16px 20px}
+.xp-burst{font-family:'Sora',sans-serif;font-size:48px;font-weight:800;color:var(--g);line-height:1;margin:12px 0}
+/* TOAST */
+.toast{position:fixed;top:calc(env(safe-area-inset-top,44px)+8px);left:50%;transform:translateX(-50%) translateY(-80px);background:var(--card2);border:1px solid var(--br);border-radius:var(--rx);padding:10px 22px;font-size:14px;font-weight:500;z-index:999;transition:transform .26s cubic-bezier(.4,0,.2,1);white-space:nowrap;box-shadow:0 8px 28px rgba(0,0,0,.55)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.ok{color:var(--g);border-color:rgba(59,255,160,.35)}.toast.err{color:var(--rd);border-color:rgba(255,107,107,.35)}
+/* MODAL */
+.modal-ov{position:fixed;inset:0;background:rgba(6,9,26,.88);z-index:200;display:none;align-items:flex-end;justify-content:center}
+.modal-ov.open{display:flex}
+.modal{background:var(--surf);border:1px solid var(--br);border-radius:24px 24px 0 0;padding:24px 20px;padding-bottom:calc(env(safe-area-inset-bottom,20px)+16px);width:100%;max-width:430px;animation:fUp .22s ease}
+.mh{width:36px;height:4px;background:var(--br);border-radius:2px;margin:0 auto 18px}
+</style>
+</head>
+<body>
+<div id="toast" class="toast"></div>
+<div id="modal-ov" class="modal-ov"><div class="modal" id="modal-box"></div></div>
+
+<!-- ONBOARD -->
+<div id="s-onboard" class="screen active" style="align-items:center;justify-content:center">
+  <div style="padding:32px 28px;text-align:center;animation:fUp .5s ease both">
+    <div style="width:92px;height:92px;border-radius:28px;background:linear-gradient(135deg,var(--g),var(--bl));display:flex;align-items:center;justify-content:center;font-size:44px;margin:0 auto 20px;box-shadow:0 24px 60px var(--g20)">🇺🇸</div>
+    <h1>FluentAI</h1>
+    <p class="dim" style="font-size:16px;line-height:1.65;margin:12px 0 28px">Seu professor de <strong style="color:var(--t)">American English</strong> com IA. Aulas completas, do início ao fim.</p>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:28px">
+      <span class="badge bg">🎙️ Professor IA</span>
+      <span class="badge bb">📚 Aula guiada</span>
+      <span class="badge ba">🔄 Adaptativo</span>
+      <span class="badge bp">🧠 SRS</span>
+    </div>
+    <button class="btn btn-p btn-full" onclick="goto('s-setup')">Começar →</button>
+    <p class="sm dim" style="margin-top:12px">Grátis. Sem cartão de crédito.</p>
+  </div>
+</div>
+
+<!-- SETUP -->
+<div id="s-setup" class="screen">
+  <div class="scroll" style="padding:28px 24px;padding-top:calc(env(safe-area-inset-top,44px)+16px)">
+    <button class="back" onclick="back()" style="margin-bottom:20px"><svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>Voltar</button>
+    <h2 style="margin-bottom:6px">Seu perfil</h2>
+    <p class="dim sm" style="margin-bottom:24px">O professor adapta cada aula ao seu nível automaticamente.</p>
+    <div style="margin-bottom:18px"><div class="lbl" style="margin-bottom:10px">Seu nome</div><input id="inp-name" class="input" type="text" placeholder="Como posso te chamar?" maxlength="30"></div>
+    <div class="lbl" style="margin-bottom:10px">Seu nível atual</div>
+    <div class="lvl-card" id="lc-b" onclick="selLvl('beginner')">
+      <div style="font-size:26px;margin-bottom:8px">🌱</div>
+      <div style="display:flex;align-items:flex-start;justify-content:space-between">
+        <div><h3>Iniciante</h3><p class="sm dim" style="margin-top:4px;line-height:1.5">Conheço poucas palavras ou nunca estudei inglês seriamente</p><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px"><span class="badge bg">A1 → A2</span><span class="badge bg">Frases simples</span></div></div>
+        <div class="lvl-chk"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></div>
+      </div>
+    </div>
+    <div class="lvl-card" id="lc-i" onclick="selLvl('intermediate')">
+      <div style="font-size:26px;margin-bottom:8px">🚀</div>
+      <div style="display:flex;align-items:flex-start;justify-content:space-between">
+        <div><h3>Intermediário</h3><p class="sm dim" style="margin-top:4px;line-height:1.5">Entendo o básico mas quero fluência e soar mais americano</p><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px"><span class="badge bp">B1 → B2</span><span class="badge bp">Phrasal verbs</span></div></div>
+        <div class="lvl-chk"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></div>
+      </div>
+    </div>
+    <button class="btn btn-p btn-full" onclick="finishSetup()" style="margin-top:24px">Criar perfil →</button>
+    <div style="height:32px"></div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="s-dash" class="screen">
+  <div class="scroll">
+    <div class="dash-hero">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+        <div>
+          <p class="sm dim" id="dash-greet">Good morning 👋</p>
+          <h2 id="dash-name" style="margin-top:2px">Welcome!</h2>
+        </div>
+        <div class="streak-pill">🔥 <span id="streak-n">0</span></div>
+      </div>
+      <!-- START LESSON BUTTON -->
+      <button class="start-btn" onclick="startLesson()" id="start-btn">
+        <div style="text-align:left">
+          <div id="start-label" style="font-size:18px;margin-bottom:2px">Start Today's Lesson</div>
+          <div id="start-sub" style="font-size:12px;font-weight:500;opacity:.75">~15 min • 5 phases • American English</div>
+        </div>
+        <div style="font-size:32px">▶</div>
+      </button>
+      <div class="dash-stats">
+        <div class="stat-card"><div class="stat-n" style="color:var(--g)" id="st-xp">0</div><div class="sm dim" style="margin-top:4px">XP</div></div>
+        <div class="stat-card"><div class="stat-n" style="color:var(--acc)" id="st-lessons">0</div><div class="sm dim" style="margin-top:4px">Aulas</div></div>
+        <div class="stat-card"><div class="stat-n" style="color:var(--bl)" id="st-words">0</div><div class="sm dim" style="margin-top:4px">Vocab</div></div>
+      </div>
+      <div class="adaptive-box">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <span class="sm" style="font-weight:600">Nível adaptativo</span>
+          <span class="sm" style="color:var(--g);font-weight:700" id="adap-lbl">A1</span>
+        </div>
+        <div class="adap-dots" id="adap-dots">
+          <div class="adap-dot on"></div><div class="adap-dot"></div><div class="adap-dot"></div><div class="adap-dot"></div><div class="adap-dot"></div>
+        </div>
+        <p class="xs dim" style="margin-top:6px" id="adap-desc">Focando em vocabulário básico</p>
+      </div>
+      <div class="prev-lesson" id="prev-lesson" style="display:none">
+        <div class="lbl" style="margin-bottom:8px">Última aula</div>
+        <p class="sm dim" id="prev-lesson-text"></p>
+      </div>
+    </div>
+    <div style="height:16px"></div>
+  </div>
+  <nav class="nav">
+    <button class="nav-btn on" onclick="switchTab('s-dash',0)"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg><span class="nav-lbl">Home</span></button>
+    <button class="nav-btn" onclick="switchTab('s-vocab',1)"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg><span class="nav-lbl">Vocab</span></button>
+    <button class="nav-btn" onclick="switchTab('s-profile',2)"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg><span class="nav-lbl">Profile</span></button>
+  </nav>
+</div>
+
+<!-- LESSON SCREEN -->
+<div id="s-lesson" class="screen" style="flex-direction:column">
+  <!-- phase progress bar -->
+  <div class="phase-strip" id="phase-strip">
+    <div class="ph-dot active" id="ph0"><div class="ph-circle active">☀️</div><div class="ph-label">Warm-up</div></div>
+    <div class="ph-line" id="pl0"></div>
+    <div class="ph-dot" id="ph1"><div class="ph-circle">📖</div><div class="ph-label">Vocab</div></div>
+    <div class="ph-line" id="pl1"></div>
+    <div class="ph-dot" id="ph2"><div class="ph-circle">🎯</div><div class="ph-label">Drill</div></div>
+    <div class="ph-line" id="pl2"></div>
+    <div class="ph-dot" id="ph3"><div class="ph-circle">💬</div><div class="ph-label">Conversa</div></div>
+    <div class="ph-line" id="pl3"></div>
+    <div class="ph-dot" id="ph4"><div class="ph-circle">🏁</div><div class="ph-label">Fim</div></div>
+  </div>
+  <!-- progress bar -->
+  <div style="height:3px;background:var(--br);flex-shrink:0"><div class="prog-fill" id="lesson-prog" style="width:0%"></div></div>
+  <!-- chat messages -->
+  <div class="chat" id="lesson-chat"></div>
+  <!-- input bar -->
+  <div class="chat-bar" id="lesson-input-bar">
+    <div class="chat-row">
+      <textarea class="chat-ta" id="lesson-ta" placeholder="Type your answer in English..." rows="1" onkeydown="handleLessonKey(event)" oninput="autoR(this)"></textarea>
+      <button class="ibt mic" id="lesson-mic" onclick="toggleMic('lesson-ta','lesson-mic')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg></button>
+      <button class="ibt send" id="lesson-send" onclick="sendLesson()"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg></button>
+    </div>
+  </div>
+</div>
+
+<!-- VOCAB BANK -->
+<div id="s-vocab" class="screen" style="flex-direction:column">
+  <div style="padding:12px 20px;padding-top:calc(env(safe-area-inset-top,44px)+8px);background:var(--surf);border-bottom:1px solid var(--br)">
+    <div style="display:flex;align-items:center;justify-content:space-between"><h2>Vocab Bank 🧠</h2><button class="btn-sm btn-ghost" onclick="addVocabM()">+ Add</button></div>
+  </div>
+  <div class="vtabs"><button class="vtab on" id="vt-fc" onclick="showVtab('fc')">📇 Flashcards</button><button class="vtab" id="vt-s" onclick="showVtab('saved')">📚 Saved (<span id="v-count">0</span>)</button></div>
+  <div id="vfc-view" class="scroll"><div id="vfc-content" style="padding:20px 0"></div></div>
+  <div id="vs-view" class="scroll" style="display:none"><div id="vs-list"></div><div style="height:20px"></div></div>
+  <nav class="nav">
+    <button class="nav-btn" onclick="switchTab('s-dash',0)"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg><span class="nav-lbl">Home</span></button>
+    <button class="nav-btn on" onclick="switchTab('s-vocab',1)"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg><span class="nav-lbl">Vocab</span></button>
+    <button class="nav-btn" onclick="switchTab('s-profile',2)"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg><span class="nav-lbl">Profile</span></button>
+  </nav>
+</div>
+
+<!-- PROFILE -->
+<div id="s-profile" class="screen" style="flex-direction:column">
+  <div style="padding:12px 20px;padding-top:calc(env(safe-area-inset-top,44px)+8px);background:var(--surf);border-bottom:1px solid var(--br)"><h2>Profile 👤</h2></div>
+  <div class="scroll">
+    <div style="padding:16px 20px">
+      <div class="p-hero">
+        <div class="p-ava" id="p-ava">??</div>
+        <h2 id="p-name">-</h2>
+        <div style="margin-top:6px"><span class="badge" id="p-lvl-badge">-</span></div>
+        <div style="margin-top:14px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span class="sm dim">Level <span id="p-lvl">1</span></span><span class="sm dim"><span id="p-xp">0</span>/<span id="p-nxt">500</span> XP</span></div>
+          <div class="prog-track"><div class="prog-fill" id="p-bar" style="width:0%"></div></div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+        <div class="stat-card"><div class="stat-n" style="color:var(--g)" id="p-streak">0</div><div class="sm dim" style="margin-top:4px">🔥 Streak</div></div>
+        <div class="stat-card"><div class="stat-n" style="color:var(--acc)" id="p-aulas">0</div><div class="sm dim" style="margin-top:4px">Aulas</div></div>
+        <div class="stat-card"><div class="stat-n" style="color:var(--bl)" id="p-words">0</div><div class="sm dim" style="margin-top:4px">Vocab</div></div>
+        <div class="stat-card"><div class="stat-n" style="color:var(--pu)" id="p-corr">0</div><div class="sm dim" style="margin-top:4px">Correções</div></div>
+      </div>
+      <div style="background:var(--card);border:1px solid var(--br);border-radius:var(--r);padding:16px;margin-bottom:14px">
+        <div class="lbl" style="margin-bottom:12px">📊 Erros mais frequentes</div>
+        <div id="err-display"></div>
+      </div>
+      <div style="background:var(--card);border:1px solid var(--br);border-radius:var(--r);padding:16px;margin-bottom:14px">
+        <div class="lbl" style="margin-bottom:12px">🏆 Conquistas</div>
+        <div class="ach-grid" id="ach-grid"></div>
+      </div>
+      <div style="background:var(--card);border:1px solid var(--br);border-radius:var(--r);padding:16px;margin-bottom:14px">
+        <div class="lbl" style="margin-bottom:4px">⚙️ Configurações</div>
+        <div class="set-row" onclick="togTTS()"><span style="font-size:15px">🔊 Áudio automático (TTS)</span><button class="tog" id="tgl-tts"></button></div>
+        <div class="set-row" onclick="showKeyModal()"><span style="font-size:15px">🔑 API Key</span><span class="sm dim" id="key-status">-</span></div>
+        <div class="set-row" onclick="changeLvl()"><span style="font-size:15px">📊 Nível de inglês</span><span class="sm dim" id="p-lvl-txt">Beginner</span></div>
+      </div>
+      <button class="btn btn-full" style="background:var(--rd10);color:var(--rd);border:1px solid rgba(255,107,107,.25);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;border-radius:var(--rx);padding:14px;cursor:pointer" onclick="resetConfirm()">Resetar progresso</button>
+      <div style="height:32px"></div>
+    </div>
+  </div>
+  <nav class="nav">
+    <button class="nav-btn" onclick="switchTab('s-dash',0)"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg><span class="nav-lbl">Home</span></button>
+    <button class="nav-btn" onclick="switchTab('s-vocab',1)"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg><span class="nav-lbl">Vocab</span></button>
+    <button class="nav-btn on" onclick="switchTab('s-profile',2)"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg><span class="nav-lbl">Profile</span></button>
+  </nav>
+</div>
+<script>
+// ═══════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════
+const SHADOWING_EX = {
+  beginner:[
+    {id:'sb1',title:'Introducing yourself',text:"Hi! My name's Alex and I'm from Denver, Colorado. I work as a graphic designer. I really love hiking and watching baseball. So great to meet you!",speed:.82},
+    {id:'sb2',title:'Ordering coffee',text:"Hey, could I get a large oat milk latte? Oh, and can I also grab one of those blueberry muffins? That's for here, not to go. Thanks so much!",speed:.82},
+    {id:'sb3',title:'Making weekend plans',text:"So this weekend I'm thinking about hanging out with some friends downtown. We'll probably grab some food and maybe catch a movie. What are you up to?",speed:.85},
+  ],
+  intermediate:[
+    {id:'si1',title:'Work update',text:"I've been totally swamped with this project. We're trying to wrap things up before the deadline but it's been a real challenge. I think we're finally starting to make some headway though.",speed:.9},
+    {id:'si2',title:'Talking about a restaurant',text:"Oh man, we ended up going to this amazing spot downtown last night. The food hit different — honestly one of the best meals I've had in ages. We're definitely gonna go back.",speed:.9},
+  ]
+};
+const DICTATION_EX = {
+  beginner:[
+    {text:"She goes to school every day.",hint:"Present simple with she/he/it — add -s!"},
+    {text:"Can you help me find the nearest subway station?",hint:"'Can' for requests + American 'subway' not 'tube'"},
+    {text:"I would like a cup of coffee, please.",hint:"Polite request — very common at American cafes"},
+    {text:"They are going to the park this weekend.",hint:"'Going to' future — a plan already decided"},
+    {text:"What time does the movie start?",hint:"Question with 'does' — no -s on the main verb"},
+  ],
+  intermediate:[
+    {text:"I've been meaning to call you back but I've been swamped.",hint:"Present perfect continuous + American slang 'swamped'"},
+    {text:"She said she would get back to me by the end of the week.",hint:"Reported speech — 'would' instead of 'will'"},
+    {text:"The deal fell through at the last minute, which was really disappointing.",hint:"Phrasal verb 'fell through' + relative clause"},
+    {text:"By the time we got there, the restaurant had already closed.",hint:"Past perfect — action before another past action"},
+    {text:"If you hadn't reminded me, I would've completely forgotten.",hint:"Third conditional — past unreal situation"},
+  ]
+};
+const MINIMAL_PAIRS = [
+  {words:['ship','sheep'],ipa:['/ʃɪp/','/ʃiːp/'],cat:'Short I vs Long EE',tip:'ship: short quick vowel. sheep: long "ee" — hold it TWICE as long!'},
+  {words:['think','sink'],ipa:['/θɪŋk/','/sɪŋk/'],cat:'TH (θ) vs S',tip:'think: put your tongue BETWEEN your teeth. sink: tongue stays inside.'},
+  {words:['they','day'],ipa:['/ðeɪ/','/deɪ/'],cat:'TH (ð) vs D',tip:'they: voiced TH — touch teeth with tongue AND vibrate. day: regular D.'},
+  {words:['rice','lice'],ipa:['/raɪs/','/laɪs/'],cat:'R vs L',tip:'rice: American R — curl tongue slightly back. lice: tongue tip touches front.'},
+  {words:['live','leave'],ipa:['/lɪv/','/liːv/'],cat:'Short I vs Long EE',tip:'live: short quick vowel. leave: long "ee" — hold it longer!'},
+  {words:['pull','pool'],ipa:['/pʊl/','/puːl/'],cat:'Short OO vs Long OO',tip:'pull: relaxed short OO (like "book"). pool: long OO (like "food").'},
+  {words:['bet','bat'],ipa:['/bɛt/','/bæt/'],cat:'E vs Æ sounds',tip:'bet: "eh" — mouth half open. bat: open mouth wider, "aa" like in "cat".'},
+  {words:['grow','glow'],ipa:['/ɡroʊ/','/ɡloʊ/'],cat:'R vs L (end)',tip:'grow: American R — tongue curls back. glow: L — tongue touches front of roof.'},
+];
+const VOCAB_SEEDS = {
+  beginner:[
+    {word:'swamped',def:'muito ocupado, atolado de trabalho',ipa:'swɒmpt'},
+    {word:'grab',def:'pegar de forma casual (grab coffee = pegar um café)',ipa:'ɡræb'},
+    {word:'hang out',def:'sair com amigos, passar tempo juntos',ipa:'hæŋ aʊt'},
+    {word:'no worries',def:'sem problema (resposta casual para obrigado/desculpa)',ipa:'noʊ wʌriz'},
+    {word:'awesome',def:'incrível, ótimo (muito americano)',ipa:'ɔːsəm'},
+  ],
+  intermediate:[
+    {word:'wrap up',def:'concluir, finalizar algo',ipa:'ræp ʌp'},
+    {word:'game-changer',def:'algo que muda tudo, revolucionário',ipa:'ɡeɪm tʃeɪndʒər'},
+    {word:'fall through',def:'não dar certo, fracassar (plano ou acordo)',ipa:'fɔːl θruː'},
+    {word:'make headway',def:'progredir, avançar em algo difícil',ipa:'meɪk hɛdweɪ'},
+    {word:'hits different',def:'tem um impacto especial, afeta de forma única',ipa:'hɪts ˈdɪfərənt'},
+  ]
+};
+const CONV_TOPICS = ['your daily routine','an American city you want to visit','your favorite food','what you do for fun','your job or studies','something you watched recently'];
+const ACHIEVEMENTS = [
+  {id:'first',icon:'🌱',name:'First lesson',ok:s=>s.user.lessons>=1},
+  {id:'streak3',icon:'🔥',name:'3-day streak',ok:s=>s.user.streak>=3},
+  {id:'xp100',icon:'⭐',name:'100 XP',ok:s=>s.user.xp>=100},
+  {id:'shadow1',icon:'🔄',name:'First shadow',ok:s=>s.user.shadows>=1},
+  {id:'words20',icon:'📚',name:'20 words saved',ok:s=>s.vocab.length>=20},
+  {id:'corr5',icon:'✅',name:'5 corrections',ok:s=>s.user.corrections>=5},
+  {id:'streak7',icon:'🏆',name:'7-day streak',ok:s=>s.user.streak>=7},
+  {id:'xp500',icon:'💎',name:'500 XP',ok:s=>s.user.xp>=500},
+];
+
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
+const ST = {
+  user:{name:'',level:'beginner',xp:0,lessons:0,words:0,streak:0,corrections:0,lastDate:'',adaptiveScore:15,shadows:0,lastLesson:''},
+  settings:{tts:true},
+  errors:{subjectVerb:0,tense:0,article:0,preposition:0,plural:0,wordOrder:0},
+  vocab:[],
+  navH:[],
+  // lesson state
+  lesson:{
+    active:false,
+    phase:0, // 0=warmup 1=vocab 2=drill 3=conv 4=end
+    phaseStep:0,
+    msgs:[],
+    drillType:'', // shadowing|dictation|minimal_pairs
+    drillDone:false,
+    drillIdx:0,
+    convTurns:0,
+    vocabIdx:0,
+    vocabDone:false,
+    pronPlayed:-1,
+    pairIdx:0,
+    xpEarned:0,
+    waitingForUser:false,
+    convTopic:'',
+  }
+};
+function save(){try{localStorage.setItem('fai3',JSON.stringify({u:ST.user,s:ST.settings,e:ST.errors,v:ST.vocab}))}catch(x){}}
+function load(){try{const d=JSON.parse(localStorage.getItem('fai3')||'{}');if(d.u)Object.assign(ST.user,d.u);if(d.s)Object.assign(ST.settings,d.s);if(d.e)Object.assign(ST.errors,d.e);if(d.v)ST.vocab=d.v||[]}catch(x){}}
+
+// ═══════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════
+let selLevel='';
+function goto(id){const p=document.querySelector('.screen.active');const n=document.getElementById(id);if(!n||p===n)return;p.classList.remove('active');n.classList.remove('si','sb');n.classList.add('active','si');ST.navH.push(p.id);setTimeout(()=>n.classList.remove('si'),340);onEnter(id);}
+function back(){const pid=ST.navH.pop();if(!pid)return;const c=document.querySelector('.screen.active');const p=document.getElementById(pid);if(!p)return;c.classList.remove('active');p.classList.remove('si','sb');p.classList.add('active','sb');setTimeout(()=>p.classList.remove('sb'),340);onEnter(pid);}
+function switchTab(id,i){const p=document.querySelector('.screen.active');const n=document.getElementById(id);if(!n||p===n)return;p.classList.remove('active');n.classList.add('active');ST.navH=[];document.querySelectorAll('.nav-btn').forEach((b,j)=>b.classList.toggle('on',j===i));onEnter(id);}
+function onEnter(id){if(id==='s-dash')renderDash();if(id==='s-vocab')renderVocab();if(id==='s-profile')renderProfile();}
+
+// ═══════════════════════════════════════════
+// SETUP
+// ═══════════════════════════════════════════
+function selLvl(l){selLevel=l;document.querySelectorAll('.lvl-card').forEach(c=>c.classList.remove('sel'));document.getElementById('lc-'+l[0]).classList.add('sel');}
+function finishSetup(){const name=document.getElementById('inp-name').value.trim();if(!name){toast('Digite seu nome 😊','err');return;}if(!selLevel){toast('Escolha seu nível','err');return;}ST.user.name=name;ST.user.level=selLevel;ST.user.adaptiveScore=selLevel==='intermediate'?55:15;// Seed vocab
+VOCAB_SEEDS[selLevel].forEach(w=>saveWord(w.word,w.def,w.ipa));save();switchTab('s-dash',0);renderDash();}
+
+// ═══════════════════════════════════════════
+// ADAPTIVE
+// ═══════════════════════════════════════════
+function getAdap(){const s=ST.user.adaptiveScore;if(s<25)return{code:'A1',desc:'Vocabulário básico e frases simples'};if(s<45)return{code:'A2',desc:'Frases cotidianas e rotinas'};if(s<65)return{code:'B1',desc:'Phrasal verbs, idioms e conversação'};if(s<80)return{code:'B2',desc:'Expressões avançadas e fluência'};return{code:'C1',desc:'Inglês nativo e nuances culturais'};}
+function adapInstr(){const s=ST.user.adaptiveScore;if(s<25)return'Use VERY simple American English vocabulary (A1 level). Short sentences, max 8 words. Always explain new words. Use present simple and to be. Avoid slang.';if(s<45)return'Use simple American English (A2). Include common American expressions. Explain occasional difficult words briefly.';if(s<65)return'Use natural American English (B1). Include phrasal verbs and common American idioms. Minimal Portuguese hints.';if(s<80)return'Use rich American vocabulary (B2). Use slang, idioms, cultural references freely.';return'Use advanced native American English (C1). Complex structures, nuance, humor.';}
+function bump(right,n){if(right)ST.user.adaptiveScore=Math.min(100,ST.user.adaptiveScore+2);else ST.user.adaptiveScore=Math.max(0,ST.user.adaptiveScore-Math.min(n||1,3));save();}
+function pickDrill(){// Choose drill based on weakest error type
+const e=ST.errors;const drills=['shadowing','dictation','minimal_pairs'];// weighted random with preference toward weakest area
+if(e.subjectVerb+e.tense+e.plural>e.preposition+e.article)return 'dictation';
+if(ST.user.shadows<2)return 'shadowing';
+return drills[Math.floor(Math.random()*drills.length)];}
+
+// ═══════════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════════
+function renderDash(){const hr=new Date().getHours();document.getElementById('dash-greet').textContent=(hr<12?'Good morning':hr<18?'Good afternoon':'Good evening')+' 👋';document.getElementById('dash-name').textContent=ST.user.name||'Welcome!';document.getElementById('streak-n').textContent=ST.user.streak;document.getElementById('st-xp').textContent=ST.user.xp;document.getElementById('st-lessons').textContent=ST.user.lessons;document.getElementById('st-words').textContent=ST.user.words;const a=getAdap();document.getElementById('adap-lbl').textContent=a.code;document.getElementById('adap-desc').textContent=a.desc;const di=Math.floor(ST.user.adaptiveScore/20);document.querySelectorAll('.adap-dot').forEach((d,i)=>d.classList.toggle('on',i<=di));if(ST.user.lastLesson){document.getElementById('prev-lesson').style.display='block';document.getElementById('prev-lesson-text').textContent=ST.user.lastLesson;}// Update start button label if lesson done today
+const today=new Date().toDateString();if(ST.user.lastDate===today){document.getElementById('start-label').textContent='Practice Again';document.getElementById('start-sub').textContent='Continue improving your English';}else{document.getElementById('start-label').textContent="Start Today's Lesson";document.getElementById('start-sub').textContent='~15 min • 5 phases • American English';}}
+
+// ═══════════════════════════════════════════
+// LESSON ENGINE
+// ═══════════════════════════════════════════
+function startLesson(){if(!getKey()){showKeyModal();return;}// reset lesson state
+const L=ST.lesson;L.active=true;L.phase=0;L.phaseStep=0;L.msgs=[];L.drillType=pickDrill();L.drillDone=false;L.drillIdx=0;L.convTurns=0;L.vocabIdx=0;L.vocabDone=false;L.pronPlayed=-1;L.pairIdx=0;L.xpEarned=0;L.waitingForUser=false;L.convTopic=CONV_TOPICS[Math.floor(Math.random()*CONV_TOPICS.length)];
+// clear chat
+document.getElementById('lesson-chat').innerHTML='';document.getElementById('lesson-prog').style.width='0%';document.getElementById('lesson-ta').value='';
+updatePhaseUI(0);
+goto('s-lesson');
+setTimeout(()=>runPhase(0),400);}
+
+function runPhase(phase){const L=ST.lesson;L.phase=phase;L.phaseStep=0;updatePhaseUI(phase);setProgress(phase*20);switch(phase){case 0:return doWarmup();case 1:return doVocab();case 2:return doDrill();case 3:return doConv();case 4:return doEnd();}}
+
+function nextPhase(){const L=ST.lesson;runPhase(L.phase+1);}
+
+function updatePhaseUI(p){for(let i=0;i<5;i++){const dot=document.getElementById('ph'+i);const circ=dot.querySelector('.ph-circle');if(i<p){dot.className='ph-dot done';circ.className='ph-circle done';}else if(i===p){dot.className='ph-dot active';circ.className='ph-circle active';}else{dot.className='ph-dot';circ.className='ph-circle';}if(i<4){const ln=document.getElementById('pl'+i);ln.className='ph-line'+(i<p?' done':'');}};}
+
+function setProgress(pct){document.getElementById('lesson-prog').style.width=pct+'%';}
+
+// ─── WARM-UP ──────────────────────────────
+async function doWarmup(){const L=ST.lesson;L.waitingForUser=false;const name=ST.user.name.split(' ')[0];const sys=buildTeacherSys('warmup');const prompt=`Start our lesson warmup. Greet ${name} warmly by name, mention this is an American English class, and ask ONE simple question about their day or recent activities. Keep it short — 2-3 sentences max. Be friendly, like a cool American teacher.`;teacherMsg(sys,prompt);}
+
+async function handleWarmupReply(text){const L=ST.lesson;L.phaseStep++;if(L.phaseStep>=2){// transition to vocab
+const sys=buildTeacherSys('warmup');const prompt=`The student said: "${text}". Respond warmly in 1-2 sentences with a natural American reaction. Then tell them you're moving to vocabulary review. Be natural and smooth with the transition.`;const res=await callAI(sys,[{role:'user',content:text}]);addAIMsg(res);if(ST.settings.tts)speak(clean(res));setTimeout(()=>nextPhase(),1800);}else{const sys=buildTeacherSys('warmup');const msgs=buildMsgs(L.msgs,text);const res=await callAI(sys,msgs);addAIMsg(res);L.msgs.push({role:'user',content:text},{role:'assistant',content:res});if(ST.settings.tts)speak(clean(res));L.waitingForUser=true;}}
+
+// ─── VOCAB ────────────────────────────────
+async function doVocab(){const L=ST.lesson;const due=ST.vocab.filter(v=>v.nextReview<=Date.now());const pool=due.length>0?due:ST.vocab;if(!pool.length){addAIMsg("We'll skip vocab review today since your bank is empty. Add words as you learn! Let's move to the drill. 💪");setTimeout(()=>nextPhase(),1600);return;}// pick up to 3 words
+L.vocabWords=pool.slice(0,3);L.vocabIdx=0;// teacher intro message
+addAIMsg(`Alright, time for **vocab review**! I'm going to show you ${L.vocabWords.length} word${L.vocabWords.length>1?'s':''} from your personal vocab bank. Tap the card to reveal the meaning, then tell me how well you remembered it. 📖`);setTimeout(()=>showFlashcard(0),1200);}
+
+function showFlashcard(idx){const L=ST.lesson;const v=L.vocabWords[idx];const card=`<div class="act-card act-active">
+<div class="act-title"><span class="act-icon">📖</span><span class="act-name">Flashcard ${idx+1} of ${L.vocabWords.length}</span></div>
+<div class="fc" id="fc-${idx}" onclick="flipFC(${idx})">
+<div class="fc-word">${v.word}</div>
+${v.ipa?`<div class="fc-ipa">/${v.ipa}/</div>`:''}
+<div class="fc-def" id="fcd-${idx}">${v.def}</div>
+<div style="font-size:12px;color:var(--t3);margin-top:10px" id="fc-hint-${idx}">Tap to reveal meaning</div>
+</div>
+<div class="srs-row" id="srs-${idx}" style="display:none">
+<button class="srs-b f" onclick="srsRate(${idx},0)">😵 Forgot</button>
+<button class="srs-b h" onclick="srsRate(${idx},1)">😅 Hard</button>
+<button class="srs-b g" onclick="srsRate(${idx},2)">😊 Good</button>
+<button class="srs-b e" onclick="srsRate(${idx},3)">🎯 Easy</button>
+</div>
+<div style="margin-top:10px"><button class="btn-sm btn-ghost" onclick="speak('${v.word.replace(/'/g,"\\'")}',1.0)" style="font-size:12px">🔊 Hear it</button></div>
+</div>`;addRaw(card);}
+
+function flipFC(idx){const L=ST.lesson;const fc=document.getElementById('fc-'+idx);fc.classList.add('revealed');document.getElementById('fcd-'+idx).style.display='block';document.getElementById('fc-hint-'+idx).style.display='none';document.getElementById('srs-'+idx).style.display='flex';}
+
+function srsRate(idx,q){const L=ST.lesson;const v=L.vocabWords[idx];const vr=ST.vocab.find(x=>x.word===v.word);if(vr){const day=86400000;if(q===0){vr.interval=1;vr.ease=Math.max(1.3,vr.ease-.2);}else if(q===1){vr.interval=Math.max(1,Math.round(vr.interval*1.2));vr.ease=Math.max(1.3,vr.ease-.15);}else if(q===2){vr.interval=Math.round(vr.interval*vr.ease*.8);}else{vr.interval=Math.round(vr.interval*vr.ease);vr.ease=Math.min(3,vr.ease+.1);}vr.nextReview=Date.now()+vr.interval*day;save();}L.vocabIdx++;if(L.vocabIdx<L.vocabWords.length){setTimeout(()=>showFlashcard(L.vocabIdx),400);}else{addXP(10);addAIMsg("Nice work on the vocab review! 🎉 Your brain is building those connections. Time for the main drill — this is where the fun begins!");setTimeout(()=>nextPhase(),1800);}}
+
+// ─── DRILL ────────────────────────────────
+async function doDrill(){const L=ST.lesson;switch(L.drillType){case'shadowing':return doShadowing();case'dictation':return doDictation();case'minimal_pairs':return doMinimalPairs();}}
+
+// SHADOWING DRILL
+async function doShadowing(){const L=ST.lesson;const pool=SHADOWING_EX[ST.user.level==='intermediate'?'intermediate':'beginner'];L.shadowEx=pool[Math.floor(Math.random()*pool.length)];addAIMsg(`🔄 **Shadowing time!** This is one of the best ways to sound like a native American speaker.\n\nHere's how it works:\n1. Press **Listen** to hear the audio\n2. Press **Shadow** and say it at the same time\n3. I'll show you your score\n\nReady? Here's your sentence:`);setTimeout(()=>{const card=`<div class="act-card act-active"><div class="act-title"><span class="act-icon">🔄</span><span class="act-name">Shadowing — ${L.shadowEx.title}</span></div><div class="shadow-text-block">"${L.shadowEx.text}"</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-o" onclick="playShad()" style="flex:1">🔊 Listen</button><button class="btn btn-p" onclick="startShadRec()" id="shad-rec-btn" style="flex:1">🎙️ Shadow</button></div><div id="shad-result"></div></div>`;addRaw(card);},800);}
+
+function playShad(){const L=ST.lesson;speak(L.shadowEx.text,L.shadowEx.speed);}
+function startShadRec(){const L=ST.lesson;const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){toast('Speech recognition not available','err');return;}document.getElementById('shad-rec-btn').textContent='🔴 Recording...';document.getElementById('shad-rec-btn').disabled=true;const r=new SR();r.lang='en-US';r.continuous=false;r.interimResults=false;r.onresult=e=>{showShadResult(e.results[0][0].transcript);};r.onend=()=>{const b=document.getElementById('shad-rec-btn');if(b){b.textContent='🎙️ Shadow again';b.disabled=false;}};r.onerror=()=>{const b=document.getElementById('shad-rec-btn');if(b){b.textContent='🎙️ Shadow';b.disabled=false;}toast('Mic error. Try again.','err');};r.start();}
+
+async function showShadResult(userText){const L=ST.lesson;const orig=L.shadowEx.text.toLowerCase().replace(/[^a-z\s]/g,'').split(/\s+/);const user=userText.toLowerCase().replace(/[^a-z\s]/g,'').split(/\s+/);let matched=0;const marked=orig.map(w=>{const ok=user.some(u=>u===w);if(ok)matched++;return ok?`<span class="word-tag wt-ok">${w}</span>`:`<span class="word-tag wt-miss">${w}</span>`;}).join(' ');const score=Math.round(matched/orig.length*100);const grade=score>=90?'🎉 Excellent!':score>=70?'👍 Good job!':score>=50?'💪 Keep going!':'🔄 Try again';document.getElementById('shad-result').innerHTML=`<div style="text-align:center;margin:14px 0"><div class="score-ring"><div class="score-num">${score}%</div></div><div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:700;margin-bottom:10px">${grade}</div><div style="line-height:2">${marked}</div></div>`;bump(score>=70,score>=70?0:2);addXP(score>=90?25:score>=70?15:8);ST.user.shadows++;save();// teacher feedback
+setTimeout(async()=>{const sys=buildTeacherSys('drill');const res=await callAI(sys,[{role:'user',content:`I just did a shadowing exercise. I scored ${score}% — I got ${matched} out of ${orig.length} words. The text was: "${L.shadowEx.text}". My attempt: "${userText}"`}]);addAIMsg(res);if(ST.settings.tts)speak(clean(res));setTimeout(()=>nextPhase(),2000);},600);}
+
+// DICTATION DRILL
+async function doDictation(){const L=ST.lesson;const pool=DICTATION_EX[ST.user.level==='intermediate'?'intermediate':'beginner'];L.dictEx=pool[Math.floor(Math.random()*pool.length)];addAIMsg(`👂 **Dictation exercise!** Listening is a superpower. You're going to hear a sentence and type exactly what you hear.\n\n💡 Hint: ${L.dictEx.hint}\n\nPress play when you're ready:`);setTimeout(()=>{const card=`<div class="act-card act-active"><div class="act-title"><span class="act-icon">👂</span><span class="act-name">Dictation</span></div><button class="btn btn-o btn-full" onclick="playDict()" id="dict-play-btn" style="margin-bottom:12px">🔊 Play Audio</button><textarea class="input" id="dict-ta" placeholder="Type what you heard..." style="min-height:70px;margin-bottom:10px"></textarea><button class="btn btn-p btn-full" onclick="checkDict()">Check ✓</button><div id="dict-res"></div></div>`;addRaw(card);},800);}
+
+function playDict(){const L=ST.lesson;speak(L.dictEx.text,ST.user.level==='beginner'?.8:.92);document.getElementById('dict-play-btn').textContent='🔊 Playing...';setTimeout(()=>{const b=document.getElementById('dict-play-btn');if(b)b.textContent='🔊 Play again';},3500);}
+async function checkDict(){const L=ST.lesson;const user=document.getElementById('dict-ta').value.trim();if(!user){toast('Type what you heard first','err');return;}const orig=L.dictEx.text.toLowerCase().replace(/[^\w\s]/g,'').split(/\s+/);const userW=user.toLowerCase().replace(/[^\w\s]/g,'').split(/\s+/);let ok=0;const marked=orig.map((w,i)=>{const uw=userW[i]||'';const good=uw===w;if(good)ok++;if(!uw)return`<div class="dw dw-miss">${w}</div>`;return good?`<div class="dw dw-ok">${w}</div>`:`<div class="dw dw-no">${uw}</div>`;}).join('');const score=Math.round(ok/orig.length*100);document.getElementById('dict-res').innerHTML=`<div style="margin:12px 0"><div class="dict-words">${marked}</div><span class="badge ${score>=80?'bg':score>=60?'ba':'br-c'}">${score}% correct</span></div><div style="background:var(--card2);border-radius:10px;padding:10px;margin-top:8px"><span style="font-size:11px;color:var(--g);font-weight:600">Correct sentence:</span><p style="font-size:14px;margin-top:4px">"${L.dictEx.text}"</p></div>`;bump(score>=70,score>=70?0:2);addXP(score>=80?20:10);ST.user.corrections++;ST.user.words+=3;save();// teacher reacts
+setTimeout(async()=>{const sys=buildTeacherSys('drill');const res=await callAI(sys,[{role:'user',content:`I did a dictation exercise. I scored ${score}%. The correct sentence was: "${L.dictEx.text}". I wrote: "${user}". Give me feedback in 1-2 sentences, then tell me we're moving to conversation practice.`}]);addAIMsg(res);if(ST.settings.tts)speak(clean(res));setTimeout(()=>nextPhase(),2000);},600);}
+
+// MINIMAL PAIRS DRILL
+async function doMinimalPairs(){const L=ST.lesson;L.pairIdx=Math.floor(Math.random()*MINIMAL_PAIRS.length);const p=MINIMAL_PAIRS[L.pairIdx];addAIMsg(`🔊 **Pronunciation drill — Minimal Pairs!** This is about sounds that Brazilian speakers often mix up.\n\n**${p.cat}**\n\nListen to both words, then I'll play one randomly and you choose which one you heard. Ready?`);setTimeout(()=>renderPairCard(),800);}
+
+function renderPairCard(){const L=ST.lesson;const p=MINIMAL_PAIRS[L.pairIdx];const card=`<div class="act-card act-active"><div class="act-title"><span class="act-icon">🔊</span><span class="act-name">Minimal Pairs — ${p.cat}</span></div><div class="pair-row"><div class="pair-btn" id="pb0" onclick="playPairW(0)"><div class="pb-word">${p.words[0]}</div><div class="pb-ipa">${p.ipa[0]}</div><div style="font-size:10px;color:var(--t3);margin-top:6px">tap to hear</div></div><div style="display:flex;align-items:center;font-size:18px;color:var(--t3)">VS</div><div class="pair-btn" id="pb1" onclick="playPairW(1)"><div class="pb-word">${p.words[1]}</div><div class="pb-ipa">${p.ipa[1]}</div><div style="font-size:10px;color:var(--t3);margin-top:6px">tap to hear</div></div></div><button class="btn btn-p btn-full" onclick="playRandPair()" id="pair-play-btn" style="margin-bottom:8px">🎵 Play Random — Which one?</button><div id="pair-choices" style="display:none;gap:8px"><button class="btn btn-ghost" style="flex:1" onclick="choosePair(0)">${p.words[0]}</button><button class="btn btn-ghost" style="flex:1" onclick="choosePair(1)">${p.words[1]}</button></div><div id="pair-tip" style="display:none" class="hint-inline"></div></div>`;addRaw(card);}
+
+function playPairW(i){const p=MINIMAL_PAIRS[ST.lesson.pairIdx];const el=document.getElementById('pb'+i);el.classList.add('pb-play');speak(p.words[i],1.0);setTimeout(()=>el.classList.remove('pb-play'),1100);}
+function playRandPair(){const L=ST.lesson;const p=MINIMAL_PAIRS[L.pairIdx];L.pronPlayed=Math.floor(Math.random()*2);speak(p.words[L.pronPlayed],1.0);document.getElementById('pair-choices').style.display='flex';}
+async function choosePair(i){const L=ST.lesson;if(L.pronPlayed<0)return;const p=MINIMAL_PAIRS[L.pairIdx];const right=i===L.pronPlayed;document.getElementById('pb'+L.pronPlayed).classList.add('pb-ok');if(!right)document.getElementById('pb'+i).classList.add('pb-no');const tip=document.getElementById('pair-tip');tip.style.display='block';tip.innerHTML=`${right?'✅ Correct! ':'❌ That was "'+p.words[L.pronPlayed]+'" — '}<strong>${p.tip}</strong>`;document.getElementById('pair-choices').style.display='none';bump(right,right?0:1);addXP(right?12:5);save();setTimeout(async()=>{const sys=buildTeacherSys('drill');const res=await callAI(sys,[{role:'user',content:`I did a minimal pairs drill: "${p.words[0]}" vs "${p.words[1]}". I ${right?'got it right':'got it wrong — I chose "'+p.words[i]+'" but it was "'+p.words[L.pronPlayed]+'"'}. The pronunciation tip: ${p.tip}. Comment in 1-2 sentences and then say we're moving to conversation practice.`}]);addAIMsg(res);if(ST.settings.tts)speak(clean(res));setTimeout(()=>nextPhase(),1800);},700);}
+
+// ─── CONVERSATION ──────────────────────────
+async function doConv(){const L=ST.lesson;L.convTurns=0;L.msgs=[];const sys=buildTeacherSys('conversation');const prompt=`Start a natural American English conversation about: "${L.convTopic}". Open the conversation with one question. Keep it to 1-2 sentences. Be warm, curious, like a real American friend.`;const res=await callAI(sys,[{role:'user',content:prompt}]);addAIMsg(res);L.msgs.push({role:'assistant',content:res});if(ST.settings.tts)speak(clean(res));L.waitingForUser=true;}
+
+async function handleConvReply(text){const L=ST.lesson;L.convTurns++;L.msgs.push({role:'user',content:text});setProgress(60+L.convTurns*5);if(L.convTurns>=3){// wrap up conversation
+const sys=buildTeacherSys('conversation');L.msgs.push({role:'user',content:text});const res=await callAI(sys,[...L.msgs.slice(-6),{role:'user',content:'[Teacher: respond to the student one last time, correct any error naturally, then tell them the conversation practice is done and they did great. Be warm.]'}]);addAIMsg(res);L.msgs.push({role:'assistant',content:res});if(ST.settings.tts)speak(clean(res));// check for errors
+const hasErr=res.toLowerCase().includes('quick fix')||res.toLowerCase().includes('actually');if(hasErr){ST.user.corrections++;trackError('general');}bump(!hasErr,hasErr?1:0);setTimeout(()=>nextPhase(),2000);}else{const sys=buildTeacherSys('conversation');const msgs=[...L.msgs.slice(-8)];const res=await callAI(sys,msgs);addAIMsg(res);L.msgs.push({role:'assistant',content:res});if(ST.settings.tts)speak(clean(res));// detect and highlight corrections
+if(res.includes('Quick fix')||res.includes('✅')){ST.user.corrections++;trackError('general');}L.waitingForUser=true;}}
+
+// ─── END ──────────────────────────────────
+async function doEnd(){const L=ST.lesson;setProgress(100);updatePhaseUI(4);// update user stats
+addXP(30);ST.user.lessons++;checkStreak();const today=new Date().toDateString();const dr=L.drillType==='shadowing'?'Shadowing':L.drillType==='dictation'?'Dictation':'Minimal Pairs';ST.user.lastLesson=`Última aula: Vocab + ${dr} + Conversa sobre "${L.convTopic}"`;save();// hide input
+document.getElementById('lesson-input-bar').style.display='none';// end card
+const xp=L.xpEarned||50;const card=`<div class="end-card"><div style="font-size:48px;margin-bottom:12px">🎉</div><h2 style="margin-bottom:4px">Aula concluída!</h2><p class="sm dim" style="margin-bottom:16px">Você completou as 5 fases de hoje</p><div class="xp-burst">+${xp} XP</div><div style="display:flex;gap:10px;margin-top:16px"><div style="flex:1;background:var(--card2);border-radius:12px;padding:12px;text-align:center"><div style="font-size:22px;font-weight:700;color:var(--g);font-family:'Sora',sans-serif">${ST.user.xp}</div><div class="xs dim">XP total</div></div><div style="flex:1;background:var(--card2);border-radius:12px;padding:12px;text-align:center"><div style="font-size:22px;font-weight:700;color:var(--acc);font-family:'Sora',sans-serif">${ST.user.streak}🔥</div><div class="xs dim">Streak</div></div><div style="flex:1;background:var(--card2);border-radius:12px;padding:12px;text-align:center"><div style="font-size:22px;font-weight:700;color:var(--bl);font-family:'Sora',sans-serif">${ST.user.lessons}</div><div class="xs dim">Aulas</div></div></div></div><div style="padding:0 20px 10px"><button class="btn btn-p btn-full" onclick="endLesson()">Back to Home 🏠</button></div>`;addRaw(card);// teacher closing message
+setTimeout(async()=>{const sys=buildTeacherSys('end');const res=await callAI(sys,[{role:'user',content:`Give the student a warm, brief (2-3 sentences) American English closing. Mention something specific about ${L.convTopic}. Encourage them to come back tomorrow. Sign off as FluentAI.`}]);addAIMsg(res);if(ST.settings.tts)speak(clean(res));},600);}
+
+function endLesson(){document.getElementById('lesson-input-bar').style.display='block';ST.lesson.active=false;switchTab('s-dash',0);renderDash();}
+
+// ─── LESSON INPUT HANDLER ─────────────────
+function sendLesson(){const L=ST.lesson;if(!L.active)return;const ta=document.getElementById('lesson-ta');const text=ta.value.trim();if(!text)return;ta.value='';ta.style.height='auto';addUserMsg(text);switch(L.phase){case 0:return handleWarmupReply(text);case 3:return handleConvReply(text);default:// ignore input during drill phases (handled by widgets)
+return;}}
+
+function handleLessonKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendLesson();}}
+
+// ─── AI HELPERS ───────────────────────────
+function buildTeacherSys(ctx){const name=ST.user.name.split(' ')[0]||'there';return`You are FluentAI, a warm and skilled American English teacher. Student's name: ${name}. Their level: ${adapInstr()}
+STYLE: ${ctx==='warmup'?'Friendly, casual — like a cool American friend. Short sentences. No jargon.':ctx==='conversation'?'Natural American conversational. Ask follow-up questions. Use American expressions. Reference American culture naturally.':ctx==='drill'?'Encouraging and precise. Acknowledge effort. Brief and punchy.':ctx==='end'?'Warm, congratulatory, motivating. American teacher energy.':'Natural and encouraging.'}
+CORRECTION RULE: If the student makes a grammar error, include: ✅ Quick fix: "[wrong]" → "[correct]"
+LANGUAGE: American English ONLY (apartment not flat, elevator not lift, etc.)
+RESPONSE LENGTH: ${ctx==='conversation'?'2-4 sentences':'2-3 sentences max. Be concise.'}
+DO NOT: use bullet points, numbered lists, or headers in responses.`;}
+
+function buildMsgs(history,newMsg){const msgs=[...history];msgs.push({role:'user',content:newMsg});return msgs;}
+
+async function teacherMsg(sys,prompt){showTyping();try{const res=await callAI(sys,[{role:'user',content:prompt}]);hideTyping();addAIMsg(res);ST.lesson.msgs.push({role:'assistant',content:res});if(ST.settings.tts)speak(clean(res));ST.lesson.waitingForUser=true;}catch(e){hideTyping();addAIMsg("Connection issue — tap to retry!");}}
+
+// ═══════════════════════════════════════════
+// CHAT UI
+// ═══════════════════════════════════════════
+function addAIMsg(text){const c=document.getElementById('lesson-chat');const d=document.createElement('div');d.className='msg ai fu';const time=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});// process markdown bold and corrections
+let html=text.replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>').replace(/✅ Quick fix:\s*"([^"]+)"\s*[→\-]+\s*"([^"]+)"/gi,'<div class="corr-inline"><span class="corr-wrong">$1</span> → <span class="corr-right">$2</span></div>');d.innerHTML=`<div class="ava">F</div><div><div class="bubble">${html}</div><div class="msg-time">${time}</div></div>`;c.appendChild(d);c.scrollTop=c.scrollHeight;}
+function addUserMsg(text){const c=document.getElementById('lesson-chat');const d=document.createElement('div');d.className='msg u fu';const time=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});d.innerHTML=`<div><div class="bubble">${text}</div><div class="msg-time">${time}</div></div>`;c.appendChild(d);c.scrollTop=c.scrollHeight;}
+function addRaw(html){const c=document.getElementById('lesson-chat');const d=document.createElement('div');d.className='fu';d.style.margin='4px 0';d.innerHTML=html;c.appendChild(d);c.scrollTop=c.scrollHeight;}
+function showTyping(){const c=document.getElementById('lesson-chat');const d=document.createElement('div');d.className='msg ai';d.id='typing-indicator';d.innerHTML='<div class="ava">F</div><div class="bubble typing" style="display:flex;gap:5px;align-items:center;padding:14px"><span></span><span></span><span></span></div>';c.appendChild(d);c.scrollTop=c.scrollHeight;}
+function hideTyping(){const el=document.getElementById('typing-indicator');if(el)el.remove();}
+
+// ═══════════════════════════════════════════
+// VOCAB BANK
+// ═══════════════════════════════════════════
+function saveWord(word,def,ipa){if(ST.vocab.find(v=>v.word.toLowerCase()===word.toLowerCase()))return;const now=Date.now();ST.vocab.push({word,def,ipa:ipa||'',nextReview:now,interval:1,ease:2.5,saved:now});ST.user.words++;const vc=document.getElementById('v-count');if(vc)vc.textContent=ST.vocab.length;save();}
+function addVocabM(){openModal(`<div class="mh"></div><h3 style="margin-bottom:14px">Add to Vocab Bank</h3><input class="input" id="mv-w" placeholder="Word or phrase in English" style="margin-bottom:10px"><input class="input" id="mv-d" placeholder="Meaning in Portuguese" style="margin-bottom:10px"><input class="input" id="mv-i" placeholder="Pronunciation (optional)"><button class="btn btn-p btn-full" onclick="addVocabDo()" style="margin-top:12px">Add →</button>`);}
+function addVocabDo(){const w=document.getElementById('mv-w').value.trim();const d=document.getElementById('mv-d').value.trim();const ip=document.getElementById('mv-i').value.trim();if(!w||!d){toast('Fill in word and meaning','err');return;}saveWord(w,d,ip);closeModal();toast('Word saved! 📚');}
+let fcCurrent=null;
+function renderVocab(){document.getElementById('v-count').textContent=ST.vocab.length;loadFC();}
+function showVtab(t){document.getElementById('vfc-view').style.display=t==='fc'?'flex':'none';document.getElementById('vs-view').style.display=t==='saved'?'block':'none';document.getElementById('vt-fc').classList.toggle('on',t==='fc');document.getElementById('vt-s').classList.toggle('on',t==='saved');if(t==='fc')loadFC();else renderSavedVocab();}
+function loadFC(){const c=document.getElementById('vfc-content');const due=ST.vocab.filter(v=>v.nextReview<=Date.now());if(!due.length){c.innerHTML=`<div style="text-align:center;padding:40px 20px"><div style="font-size:48px;margin-bottom:16px">🎉</div><h3 style="margin-bottom:8px">All caught up!</h3><p class="sm dim">${ST.vocab.length===0?'Add words from your lessons to start.':'Next review coming soon.'}</p></div>`;return;}fcCurrent=due[Math.floor(Math.random()*due.length)];c.innerHTML=`<div style="text-align:center;padding:12px 0"><span class="badge bb">${due.length} to review</span></div><div class="fc" id="free-fc" onclick="flipFreeFC()" style="margin:0 20px"><div class="fc-word">${fcCurrent.word}</div>${fcCurrent.ipa?`<div class="fc-ipa">/${fcCurrent.ipa}/</div>`:''}<div class="fc-def" id="free-fcd">${fcCurrent.def}</div><div style="font-size:12px;color:var(--t3);margin-top:10px" id="free-fch">Tap to reveal</div></div><div style="text-align:center;padding:8px 0;font-size:13px;color:var(--t2)">How well did you remember it?</div><div class="srs-row" id="free-srs" style="display:none;padding:0 20px"><button class="srs-b f" onclick="freeSRS(0)">😵 Forgot</button><button class="srs-b h" onclick="freeSRS(1)">😅 Hard</button><button class="srs-b g" onclick="freeSRS(2)">😊 Good</button><button class="srs-b e" onclick="freeSRS(3)">🎯 Easy</button></div><div style="padding:12px 20px"><button class="btn-sm btn-ghost btn-full" onclick="speak(${JSON.stringify(fcCurrent.word)},1.0)">🔊 Hear pronunciation</button></div>`;}
+function flipFreeFC(){document.getElementById('free-fcd').style.display='block';document.getElementById('free-fch').style.display='none';document.getElementById('free-fc').classList.add('revealed');document.getElementById('free-srs').style.display='flex';}
+function freeSRS(q){if(!fcCurrent)return;const v=ST.vocab.find(x=>x.word===fcCurrent.word);if(!v)return;const day=86400000;if(q===0){v.interval=1;v.ease=Math.max(1.3,v.ease-.2);}else if(q===1){v.interval=Math.max(1,Math.round(v.interval*1.2));v.ease=Math.max(1.3,v.ease-.15);}else if(q===2){v.interval=Math.round(v.interval*v.ease*.8);}else{v.interval=Math.round(v.interval*v.ease);v.ease=Math.min(3,v.ease+.1);}v.nextReview=Date.now()+v.interval*day;save();loadFC();}
+function renderSavedVocab(){const l=document.getElementById('vs-list');if(!ST.vocab.length){l.innerHTML='<div style="text-align:center;padding:40px 20px"><p class="dim">No words yet.<br>They\'ll appear here as you learn.</p></div>';return;}l.innerHTML=ST.vocab.sort((a,b)=>b.saved-a.saved).map(v=>`<div class="vi"><div style="flex:1"><div style="font-weight:600;font-size:15px">${v.word}</div><div style="font-size:12px;color:var(--t2);margin-top:2px">${v.def}</div></div><div style="display:flex;gap:6px;align-items:center"><button onclick="speak(${JSON.stringify(v.word)},1.0)" style="background:none;border:none;cursor:pointer;font-size:18px">🔊</button><button onclick="delVocab(${JSON.stringify(v.word)})" style="background:none;border:none;cursor:pointer;color:var(--rd);font-size:16px">✕</button></div></div>`).join('');}
+function delVocab(w){ST.vocab=ST.vocab.filter(v=>v.word!==w);save();renderSavedVocab();document.getElementById('v-count').textContent=ST.vocab.length;}
+
+// ═══════════════════════════════════════════
+// PROFILE
+// ═══════════════════════════════════════════
+function renderProfile(){const lvl=Math.floor(ST.user.xp/500)+1;const pct=Math.round((ST.user.xp%500)/500*100);document.getElementById('p-ava').textContent=ST.user.name?ST.user.name.slice(0,2).toUpperCase():'??';document.getElementById('p-name').textContent=ST.user.name||'-';const b=document.getElementById('p-lvl-badge');b.textContent=ST.user.level==='intermediate'?'🚀 Intermediate':'🌱 Beginner';b.className='badge '+(ST.user.level==='intermediate'?'bp':'bg');document.getElementById('p-lvl').textContent=lvl;document.getElementById('p-xp').textContent=ST.user.xp;document.getElementById('p-nxt').textContent=lvl*500;document.getElementById('p-bar').style.width=pct+'%';document.getElementById('p-streak').textContent=ST.user.streak;document.getElementById('p-aulas').textContent=ST.user.lessons;document.getElementById('p-words').textContent=ST.user.words;document.getElementById('p-corr').textContent=ST.user.corrections;document.getElementById('p-lvl-txt').textContent=ST.user.level==='intermediate'?'Intermediate':'Beginner';document.getElementById('tgl-tts').className='tog'+(ST.settings.tts?' on':'');
+  const ks=document.getElementById('key-status');if(ks)ks.textContent=getKey()?'✅ Configurada':'⚠️ Não configurada';renderErrors();renderAch();}
+function renderErrors(){const e=ST.errors;const lbl={subjectVerb:'Subject-verb',tense:'Tenses',article:'Articles',preposition:'Prepositions',plural:'Plurals',wordOrder:'Word order'};const tot=Math.max(1,Object.values(e).reduce((a,b)=>a+b,0));document.getElementById('err-display').innerHTML=Object.entries(e).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div class="ep-bar"><div class="ep-lbl">${lbl[k]||k}</div><div class="ep-track"><div class="ep-fill" style="width:${Math.round(v/tot*100)}%"></div></div><div class="ep-cnt">${v}</div></div>`).join('');}
+function renderAch(){document.getElementById('ach-grid').innerHTML=ACHIEVEMENTS.map(a=>`<div class="ach ${a.ok(ST)?'':'locked'}"><div class="ach-i">${a.icon}</div><div class="ach-n">${a.name}</div></div>`).join('');}
+function togTTS(){ST.settings.tts=!ST.settings.tts;save();renderProfile();}
+function changeLvl(){openModal(`<div class="mh"></div><h3 style="margin-bottom:14px">Mudar nível</h3><button class="btn btn-o btn-full" style="margin-bottom:10px" onclick="setLvl('beginner')">🌱 Beginner (A1–A2)</button><button class="btn btn-o btn-full" onclick="setLvl('intermediate')">🚀 Intermediate (B1–B2)</button>`);}
+function setLvl(l){ST.user.level=l;ST.user.adaptiveScore=l==='intermediate'?55:15;save();closeModal();toast('Nível atualizado ✅');renderProfile();}
+function resetConfirm(){openModal(`<div class="mh"></div><h3 style="margin-bottom:8px">Resetar tudo?</h3><p class="dim sm" style="margin-bottom:18px">XP, streak, vocab e histórico serão apagados.</p><button class="btn btn-full" style="background:var(--rd10);color:var(--rd);border:1px solid rgba(255,107,107,.25);border-radius:var(--rx);padding:14px;margin-bottom:10px;font-family:'DM Sans',sans-serif;font-size:15px;cursor:pointer" onclick="doReset()">Sim, resetar</button><button class="btn btn-ghost btn-full" onclick="closeModal()">Cancelar</button>`);}
+function doReset(){Object.assign(ST.user,{name:'',level:'beginner',xp:0,lessons:0,words:0,streak:0,corrections:0,lastDate:'',adaptiveScore:15,shadows:0,lastLesson:''});Object.assign(ST.errors,{subjectVerb:0,tense:0,article:0,preposition:0,plural:0,wordOrder:0});ST.vocab=[];save();closeModal();ST.navH=[];document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('s-onboard').classList.add('active');toast('Resetado!');}
+
+// ═══════════════════════════════════════════
+// AUDIO / SR / UTILS
+// ═══════════════════════════════════════════
+function speak(text,rate){if(!window.speechSynthesis||!ST.settings.tts)return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='en-US';u.rate=rate||(ST.user.level==='beginner'?.86:1.0);u.pitch=1.02;const vs=speechSynthesis.getVoices();const v=vs.find(x=>x.lang==='en-US'&&x.name.toLowerCase().includes('samantha'))||vs.find(x=>x.lang==='en-US')||vs.find(x=>x.lang.startsWith('en'));if(v)u.voice=v;speechSynthesis.speak(u);}
+function clean(t){return t.replace(/\*\*[^*]+\*\*/g,m=>m.replace(/\*\*/g,'')).replace(/✅ Quick fix:[^\n]*/gi,'').replace(/\([^)]*\)/g,'').replace(/\n+/g,' ').trim();}
+let isRec=false,recog=null;
+function toggleMic(taId,btnId){if(isRec){if(recog)recog.stop();isRec=false;const b=document.getElementById(btnId);if(b)b.classList.remove('rec');return;}const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){toast('Speech recognition not available','err');return;}const r=new SR();r.lang='en-US';r.continuous=false;r.interimResults=false;recog=r;isRec=true;const btn=document.getElementById(btnId);if(btn)btn.classList.add('rec');r.onresult=e=>{const t=e.results[0][0].transcript;const ta=document.getElementById(taId);if(ta){ta.value=(ta.value?ta.value+' ':'')+t;autoR(ta);}};r.onend=()=>{isRec=false;const b=document.getElementById(btnId);if(b)b.classList.remove('rec');};r.onerror=()=>{isRec=false;const b=document.getElementById(btnId);if(b)b.classList.remove('rec');};r.start();}
+function autoR(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,110)+'px';}
+function trackError(t){const k=t.toLowerCase();if(k.includes('subject')||k.includes('agreement'))ST.errors.subjectVerb++;else if(k.includes('tense')||k.includes('time')||k.includes('past'))ST.errors.tense++;else if(k.includes('article')||k.includes(' the')||k.includes('a/an'))ST.errors.article++;else if(k.includes('preposit'))ST.errors.preposition++;else if(k.includes('plural')||k.includes('singular'))ST.errors.plural++;else ST.errors.wordOrder++;save();}
+function addXP(n){ST.lesson.xpEarned=(ST.lesson.xpEarned||0)+n;ST.user.xp+=n;}
+function checkStreak(){const t=new Date().toDateString();if(ST.user.lastDate!==t){ST.user.streak++;ST.user.lastDate=t;}}
+
+// API
+function getKey(){return localStorage.getItem('fai3_key')||'';}
+async function callAI(sys,msgs){const key=getKey();if(!key){showKeyModal();throw new Error('no key');}const geminiMsgs=msgs.map(m=>({role:m.role==='assistant'?'model':'user',parts:[{text:m.content}]}));const body={system_instruction:{parts:[{text:sys}]},contents:geminiMsgs,generationConfig:{maxOutputTokens:600,temperature:0.85}};const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});if(!res.ok){const err=await res.json().catch(()=>({}));if(res.status===400||res.status===401||res.status===403){showKeyModal('API key inválida ou sem permissão. Verifique e tente novamente.');}throw new Error(res.status);}const d=await res.json();return d.candidates?.[0]?.content?.parts?.[0]?.text||'';}
+function showKeyModal(msg){openModal(`<div class="mh"></div><div style="text-align:center;margin-bottom:16px"><div style="font-size:36px;margin-bottom:8px">🔑</div><h3>API Key do Google</h3><p class="sm dim" style="margin-top:6px;line-height:1.5">${msg||'Cole sua Google API key. Ela fica salva só no seu aparelho.'}</p></div><input class="input" id="key-inp" type="password" placeholder="AIza..." style="margin-bottom:12px;font-family:monospace;font-size:13px"><button class="btn btn-p btn-full" onclick="saveKey()">Salvar e continuar →</button><p class="xs dim" style="text-align:center;margin-top:12px">Crie uma key grátis em <strong>aistudio.google.com</strong></p>`);}
+function saveKey(){const k=document.getElementById('key-inp').value.trim();if(!k){toast('Cole sua API key','err');return;}localStorage.setItem('fai3_key',k);closeModal();toast('API key salva! ✅');}
+
+// MODAL / TOAST
+function openModal(h){document.getElementById('modal-box').innerHTML=h;document.getElementById('modal-ov').classList.add('open');}
+function closeModal(){document.getElementById('modal-ov').classList.remove('open');}
+document.getElementById('modal-ov').addEventListener('click',e=>{if(e.target.id==='modal-ov')closeModal();});
+let toastT;
+function toast(msg,type='ok'){clearTimeout(toastT);const t=document.getElementById('toast');t.textContent=msg;t.className='toast '+type;t.classList.add('show');toastT=setTimeout(()=>t.classList.remove('show'),2800);}
+
+// INIT
+function init(){load();if(ST.user.name){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('s-dash').classList.add('active');renderDash();}if(window.speechSynthesis){speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=()=>speechSynthesis.getVoices();}}
+init();
+</script>
+</body>
+</html>
